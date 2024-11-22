@@ -3,8 +3,8 @@ import 'package:demandium/utils/core_export.dart';
 class AppConstants {
 
   static const String appName = 'Abra';
-  static const String appVersion = '2.9';
   static const String baseUrl = 'https://my.abra.africa';
+  static const String appVersion = '3.0'; /// Flutter SDK : 3.24.5
   static const bool avoidMaintenanceMode = false;
   static const String categoryUrl = '/api/v1/customer/category?limit=20';
   static const String webLandingContents = '/api/v1/customer/landing/contents';
@@ -37,8 +37,11 @@ class AppConstants {
   static const String tokenUri = '/api/v1/customer/update/fcm-token';
   static const String bookingList = '/api/v1/customer/booking';
   static const String bookingDetails = '/api/v1/customer/booking';
+  static const String subBookingDetails = '/api/v1/customer/booking/single';
+  static const String repeatBookingDetails = '/api/v1/customer/booking/repeat';
   static const String trackBooking = '/api/v1/customer/booking/track';
   static const String bookingCancel = '/api/v1/customer/booking/status-update';
+  static const String subBookingCancel = '/api/v1/customer/booking/single-repeat-cancel';
   static const String serviceReview = '/api/v1/customer/review/submit';
   static const String bookingReviewList = '/api/v1/customer/review';
   static const String otherInfo = '/api/v1/customer/cart/other-info';
@@ -114,7 +117,9 @@ class AppConstants {
   static const String advertisementList = '/api/v1/customer/advertisements/ads-list?limit=50&offset=1';
   static const String registerWithSocialMedia = '/api/v1/customer/auth/registration-with-social-media';
   static const String existingAccountCheck = '/api/v1/customer/auth/existing-account-check';
-  static const String invoiceUrl = '/admin/booking/customer-invoice/';
+  static const String regularBookingInvoiceUrl = '/admin/booking/customer-invoice/';
+  static const String repeatBookingInvoiceUrl = '/admin/booking/customer-fullbooking-invoice/';
+  static const String singleRepeatBookingInvoiceUrl = '/admin/booking/customer-fullbooking-single-invoice/';
   static const String addError404Url = '/api/v1/customer/error-link';
 
 
