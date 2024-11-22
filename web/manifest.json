@@ -1,0 +1,23 @@
+{
+    "name": "Abra",
+    "short_name": "Abra",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#E70001 ",
+    "theme_color": "#E70001 ",
+    "description": "A complete on-demand booking service platform.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "favicon.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "favicon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
