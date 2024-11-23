@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 ThemeData light = ThemeData(
   useMaterial3: false,
-  fontFamily: 'PolySans',
-  primaryColor: const Color(0xFFE70001),
+  fontFamily: 'Roboto',
+  primaryColor: const Color(0xFF0572C2),
   primaryColorLight: const Color(0xFFF0F4F8),
-  primaryColorDark: const Color(0xFFE70001),
+  primaryColorDark: const Color(0xFF10324A),
   secondaryHeaderColor: const Color(0xFF758493),
 
   disabledColor: const Color(0xFF8797AB),
@@ -17,10 +17,10 @@ ThemeData light = ThemeData(
   shadowColor:  const Color(0xFFE6E5E5),
   cardColor: Colors.white,
   textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: const Color(
-      0xFFE70001))),
+      0xFF036FBE))),
   colorScheme: const ColorScheme.light(
-    primary: Color(0xFFE70001),
-    secondary: Color(0xFF171C51),
+    primary: Color(0xFF0776C7),
+    secondary: Color(0xFFFF9900),
     tertiary: Color(0xFFd35221),
     onSecondaryContainer: Color(0xFF02AA05),
     error: Color(0xFFf76767),

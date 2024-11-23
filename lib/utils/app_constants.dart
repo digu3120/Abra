@@ -2,9 +2,9 @@ import 'package:demandium/utils/core_export.dart';
 
 class AppConstants {
 
-  static const String appName = 'Abra';
-  static const String baseUrl = 'https://my.abra.africa';
+  static const String appName = 'Demandium';
   static const String appVersion = '3.0'; /// Flutter SDK : 3.24.5
+  static const String baseUrl = 'YOUR_BASE_URL';
   static const bool avoidMaintenanceMode = false;
   static const String categoryUrl = '/api/v1/customer/category?limit=20';
   static const String webLandingContents = '/api/v1/customer/landing/contents';
@@ -160,8 +160,10 @@ class AppConstants {
   };
 
   static List<LanguageModel> languages = [
-    LanguageModel(imageUrl: Images.tanzania, languageName: 'Swahili', countryCode: 'TZ', languageCode: 'sw'),
-    LanguageModel(imageUrl: Images.us, languageName: 'English', countryCode: 'US', languageCode: 'en')
+    LanguageModel(imageUrl: Images.us, languageName: 'English', countryCode: 'US', languageCode: 'en'),
+    LanguageModel(imageUrl: Images.ar, languageName: 'عربى', countryCode: 'SA', languageCode: 'ar'),
+    LanguageModel(imageUrl: Images.bn, languageName: 'বাংলা', countryCode: 'BD', languageCode: 'bn'),
+    LanguageModel(imageUrl: Images.india, languageName: 'Hindi', countryCode: 'IN', languageCode: 'hi'),
   ];
 
 

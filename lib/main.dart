@@ -16,16 +16,16 @@ Future<void> main() async {
   if(GetPlatform.isWeb || GetPlatform.isAndroid){
     await Firebase.initializeApp(
         options: const FirebaseOptions(
-          apiKey: "AIzaSyDb7jAQ2HvyGXfimczafSEWHVV4h_-j1a0",
-          authDomain: "abra-9d0dd.firebaseapp.com",
-          appId: "1:623884876607:web:82272c80c10f776236318a",
-          messagingSenderId: "623884876607",
-          projectId: "abra-9d0dd",
-          storageBucket: "abra-9d0dd.appspot.com",
+            apiKey: "AIzaSyATwpBSYz69b5Y9ryQLELOJIHZSpJcXf7I",
+            authDomain: "demancms.firebaseapp.com",
+            projectId: "demancms",
+            storageBucket: "demancms.appspot.com",
+            messagingSenderId: "889759666168",
+            appId: "1:889759666168:web:ab661cb341d3e47384d00d"
         )
     );
     await FacebookAuth.instance.webAndDesktopInitialize(
-      appId: "623884876607",
+      appId: "637072917840079",
       cookie: true,
       xfbml: true,
       version: "v15.0",

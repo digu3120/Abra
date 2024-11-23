@@ -3,27 +3,25 @@ import 'package:demandium/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-const ubuntuLight = TextStyle(
-  fontFamily: 'PolySans',
-  fontWeight: FontWeight.w800,
-);
-
+var ubuntuLight = TextStyle(
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.w300,
     fontSize: Dimensions.fontSizeSmall,
     height: 1.5);
 
 const ubuntuRegular = TextStyle(
-  fontFamily: 'PolySans',
-  fontWeight: FontWeight.w500,
+  fontFamily: 'Roboto',
+  fontWeight: FontWeight.w400,
 );
 
 const ubuntuMedium = TextStyle(
-  fontFamily: 'PolySans',
-  fontWeight: FontWeight.w600,
+  fontFamily: 'Roboto',
+  fontWeight: FontWeight.w500,
 );
 
 const ubuntuBold = TextStyle(
-  fontFamily: 'PolySans',
-  fontWeight: FontWeight.w800,
+  fontFamily: 'Roboto',
+  fontWeight: FontWeight.w700,
 );
 
 List<BoxShadow>? searchBoxShadow = [

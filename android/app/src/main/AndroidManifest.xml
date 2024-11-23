@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.abra.user">
+    package="com.sixamtech.demandium.user">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -24,7 +24,7 @@
     </queries>
 
     <application
-        android:label="Abra"
+        android:label="Demandium"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
         android:extractNativeLibs="true"
@@ -33,7 +33,7 @@
 
 
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDNHPYm32ci_LwPvDmg5IlDZ82Y1ShaS7w"/>
+            android:value="YOUR_MAP_KEY"/>
 
         <provider
             android:name="com.pichillilorenzo.flutter_inappwebview_android.InAppWebViewFileProvider"

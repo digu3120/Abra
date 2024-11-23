@@ -192,8 +192,7 @@ class Images {
   static get playStoreIcon => 'play_store'.png;
   static get appStoreIcon => 'app_store'.png;
   static String get apple => 'apple'.png;
-  static String get tanzania => 'tanzania'.png;
-  static String get ug => 'user_logo'.png;
+
 }
 
 extension on String {
