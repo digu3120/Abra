@@ -80,6 +80,8 @@ class _ServiceAreaScreenState extends State<ServiceAreaScreen> {
                     ),
                   ) :const SizedBox()
                 ]),
+
+                !ResponsiveHelper.isDesktop(context) ? const SizedBox(height: 100,): const SizedBox()
               ]),
             ),
           ),

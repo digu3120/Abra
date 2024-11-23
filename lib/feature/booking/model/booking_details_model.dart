@@ -27,7 +27,8 @@ class BookingDetailsModel {
 
 class BookingDetailsContent {
   String? id;
-  int? readableId;
+  String? bookingId;
+  String? readableId;
   String? customerId;
   String? providerId;
   String? zoneId;
@@ -36,15 +37,15 @@ class BookingDetailsContent {
   String? paymentMethod;
   String? transactionId;
   double? totalBookingAmount;
-  num? totalTaxAmount;
-  num? totalDiscountAmount;
+  double? totalTaxAmount;
+  double? totalDiscountAmount;
   String? serviceSchedule;
   String? serviceAddressId;
   String? createdAt;
   String? updatedAt;
   String? categoryId;
   String? subCategoryId;
-  List<BookingContentDetailsItem>? detail;
+  List<ItemService>? bookingDetails;
   List<ScheduleHistories>? scheduleHistories;
   List<StatusHistories>? statusHistories;
   List<PartialPayment>? partialPayments;
@@ -60,7 +61,19 @@ class BookingDetailsContent {
   double? extraFee;
   double ? additionalCharge;
   double ? totalReferralDiscountAmount;
-
+  int? isRepeatBooking;
+  String? time;
+  String? startDate;
+  String? endDate;
+  int? totalCount;
+  String? bookingType;
+  List<String>? weekNames;
+  int? completedCount;
+  int? canceledCount;
+  RepeatBooking ? nextService;
+  List<RepeatBooking>? repeatBookingList;
+  List<RepeatHistory>? repeatEditHistory;
+  BookingDetailsContent? subBooking;
 
 
   BookingDetailsContent(
@@ -82,7 +95,7 @@ class BookingDetailsContent {
         this.updatedAt,
         this.categoryId,
         this.subCategoryId,
-        this.detail,
+        this.bookingDetails,
         this.scheduleHistories,
         this.statusHistories,
         this.partialPayments,
@@ -97,14 +110,27 @@ class BookingDetailsContent {
         this.photoEvidenceFullPath,
         this.extraFee,
         this.additionalCharge,
-        this.totalReferralDiscountAmount
-
-
+        this.totalReferralDiscountAmount,
+        this.time,
+        this.startDate,
+        this.endDate,
+        this.totalCount,
+        this.bookingType,
+        this.completedCount,
+        this.canceledCount,
+        this.nextService,
+        this.isRepeatBooking,
+        this.weekNames,
+        this.repeatBookingList,
+        this.subBooking,
+        this.repeatEditHistory,
+        this.bookingId
       });
 
   BookingDetailsContent.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    readableId = json['readable_id'];
+    bookingId = json['booking_id'];
+    readableId = json['readable_id'].toString();
     customerId = json['customer_id'];
     providerId = json['provider_id'];
     zoneId = json['zone_id'];
@@ -113,8 +139,8 @@ class BookingDetailsContent {
     paymentMethod = json['payment_method'];
     transactionId = json['transaction_id'];
     totalBookingAmount = double.tryParse(json['total_booking_amount'].toString());
-    totalTaxAmount = json['total_tax_amount'];
-    totalDiscountAmount = json['total_discount_amount'];
+    totalTaxAmount = double.tryParse(json['total_tax_amount'].toString());
+    totalDiscountAmount = double.tryParse(json['total_discount_amount'].toString());
     serviceSchedule = json['service_schedule'];
     serviceAddressId = json['service_address_id'];
     createdAt = json['created_at'];
@@ -122,9 +148,9 @@ class BookingDetailsContent {
     categoryId = json['category_id'];
     subCategoryId = json['sub_category_id'];
     if (json['detail'] != null) {
-      detail = <BookingContentDetailsItem>[];
+      bookingDetails = <ItemService>[];
       json['detail'].forEach((v) {
-        detail!.add(BookingContentDetailsItem.fromJson(v));
+        bookingDetails!.add(ItemService.fromJson(v));
       });
     }
     if (json['schedule_histories'] != null) {
@@ -168,6 +194,34 @@ class BookingDetailsContent {
     extraFee = double.tryParse(json["extra_fee"].toString());
     additionalCharge = double.tryParse(json['additional_charge'].toString());
     totalReferralDiscountAmount = double.tryParse(json['total_referral_discount_amount'].toString());
+    isRepeatBooking = int.tryParse(json['is_repeated'].toString());
+    time = json['time'];
+    startDate = json['startDate'];
+    endDate = json['endDate'];
+    totalCount = json['totalCount'];
+    bookingType = json['bookingType'];
+    weekNames = json['weekNames']?.cast<String>();
+    completedCount = json['completedCount'];
+    canceledCount = json['canceledCount'];
+    nextService = json['nextService'] != null
+        ? RepeatBooking.fromJson(json['nextService'])
+        : null;
+    if (json['repeats'] != null) {
+      repeatBookingList = <RepeatBooking>[];
+      json['repeats'].forEach((v) {
+        repeatBookingList!.add(RepeatBooking.fromJson(v));
+      });
+    }
+    if (json['repeatHistory'] != null) {
+      repeatEditHistory = <RepeatHistory>[];
+      json['repeatHistory'].forEach((v) {
+        repeatEditHistory!.add(RepeatHistory.fromJson(v));
+      });
+    }
+    subBooking = json['booking'] != null
+        ? BookingDetailsContent.fromJson(json['booking'])
+        : null;
+
 
   }
 
@@ -191,8 +245,8 @@ class BookingDetailsContent {
     data['updated_at'] = updatedAt;
     data['category_id'] = categoryId;
     data['sub_category_id'] = subCategoryId;
-    if (detail != null) {
-      data['detail'] = detail!.map((v) => v.toJson()).toList();
+    if (bookingDetails != null) {
+      data['detail'] = bookingDetails!.map((v) => v.toJson()).toList();
     }
     if (scheduleHistories != null) {
       data['schedule_histories'] =
@@ -219,32 +273,45 @@ class BookingDetailsContent {
     if (serviceman != null) {
       data['serviceman'] = serviceman!.toJson();
     }
+    data['time'] = time;
+    data['startDate'] = startDate;
+    data['endDate'] = endDate;
+    data['totalCount'] = totalCount;
+    data['bookingType'] = bookingType;
+    data['completedCount'] = completedCount;
+    data['canceledCount'] = canceledCount;
+
     return data;
   }
 }
 
-class BookingContentDetailsItem {
-  int? id;
+class ItemService {
+
   String? bookingId;
   String? serviceId;
+  String? serviceName;
   String? variantKey;
-  num? serviceCost;
+  double? serviceCost;
   int? quantity;
-  num? discountAmount;
-  num? taxAmount;
-  num? totalCost;
+  double? discountAmount;
+  double? taxAmount;
+  double? totalCost;
   String? createdAt;
   String? updatedAt;
+  double? campaignDiscountAmount;
+  double? overallCouponDiscountAmount;
   Service? service;
-  num? campaignDiscountAmount;
-  num? overallCouponDiscountAmount;
-  String? serviceName;
+
+  ItemService.copy(ItemService value) {
+    quantity = value.quantity;
+  }
 
 
-  BookingContentDetailsItem(
-      {this.id,
+  ItemService(
+      {
         this.bookingId,
         this.serviceId,
+        this.serviceName,
         this.variantKey,
         this.serviceCost,
         this.quantity,
@@ -255,33 +322,30 @@ class BookingContentDetailsItem {
         this.updatedAt,
         this.service,
         this.campaignDiscountAmount,
-        this.overallCouponDiscountAmount,
-        this.serviceName,
-      });
+        this.overallCouponDiscountAmount,});
 
-  BookingContentDetailsItem.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+  ItemService.fromJson(Map<String, dynamic> json) {
     bookingId = json['booking_id'];
     serviceId = json['service_id'];
+    serviceName = json['service_name'];
     variantKey = json['variant_key'];
-    serviceCost = json['service_cost'];
-    quantity = json['quantity'];
-    discountAmount = json['discount_amount'];
-    taxAmount = json['tax_amount'];
-    totalCost = json['total_cost'];
+    serviceCost = double.tryParse(json['service_cost'].toString());
+    quantity = int.tryParse(json['quantity'].toString());
+    discountAmount = double.tryParse(json['discount_amount'].toString());
+    taxAmount = double.tryParse(json['tax_amount'].toString());
+    totalCost = double.tryParse(json['total_cost'].toString());
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    campaignDiscountAmount = double.tryParse(json['campaign_discount_amount'].toString());
     service = json['service'] != null ? Service.fromJson(json['service']) : null;
-    campaignDiscountAmount = json['campaign_discount_amount'];
-    overallCouponDiscountAmount =json['overall_coupon_discount_amount'];
-    serviceName = json['service_name'];
+    overallCouponDiscountAmount = double.tryParse(json['overall_coupon_discount_amount'].toString());
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
     data['booking_id'] = bookingId;
     data['service_id'] = serviceId;
+    data['service_name'] = serviceName;
     data['variant_key'] = variantKey;
     data['service_cost'] = serviceCost;
     data['quantity'] = quantity;
@@ -290,12 +354,10 @@ class BookingContentDetailsItem {
     data['total_cost'] = totalCost;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
-
+    data['campaign_discount_amount'] = campaignDiscountAmount;
     if (service != null) {
       data['service'] = service!.toJson();
     }
-
-    data['service_name'] = serviceName;
     return data;
   }
 }
@@ -546,4 +608,131 @@ class PartialPayment {
     return data;
   }
 }
+
+class RepeatHistory {
+  int? id;
+  String? bookingId;
+  String? bookingRepeatId;
+  String? bookingRepeatDetailsId;
+  String? readableId;
+  int? oldQuantity;
+  int? newQuantity;
+  int? isMultiple;
+  double? totalBookingAmount;
+  double? totalTaxAmount;
+  double? totalDiscountAmount;
+  double? extraFee;
+  String? createdAt;
+  String? updatedAt;
+  List<RepeatHistoryLog>? repeatHistoryLogs;
+
+  RepeatHistory({this.id,
+    this.bookingId,
+    this.bookingRepeatId,
+    this.bookingRepeatDetailsId,
+    this.readableId,
+    this.oldQuantity,
+    this.newQuantity,
+    this.isMultiple,
+    this.createdAt,
+    this.updatedAt,
+    this.repeatHistoryLogs,
+    this.totalBookingAmount,
+    this.totalDiscountAmount,
+    this.totalTaxAmount,
+    this.extraFee
+  });
+
+  RepeatHistory.fromJson(Map<String, dynamic> json) {
+    id = int.tryParse(json['id'].toString());
+    bookingId = json['booking_id'];
+    bookingRepeatId = json['booking_repeat_id'];
+    bookingRepeatDetailsId = json['booking_repeat_details_id'];
+    readableId = json['readable_id'];
+    oldQuantity = int.tryParse(json['old_quantity'].toString());
+    newQuantity = int.tryParse(json['new_quantity'].toString());
+    isMultiple = int.tryParse(json['is_multiple'].toString());
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    totalBookingAmount = double.tryParse(json['total_booking_amount'].toString());
+    totalTaxAmount = double.tryParse(json['total_tax_amount'].toString());
+    totalDiscountAmount = double.tryParse(json['total_discount_amount'].toString());
+    extraFee = double.tryParse(json['extra_fee'].toString());
+    if (json['log_details'] != null) {
+      repeatHistoryLogs = <RepeatHistoryLog>[];
+      json['log_details'].forEach((v) {
+        repeatHistoryLogs!.add(RepeatHistoryLog.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['booking_id'] = bookingId;
+    data['booking_repeat_id'] = bookingRepeatId;
+    data['booking_repeat_details_id'] = bookingRepeatDetailsId;
+    data['readable_id'] = readableId;
+    data['old_quantity'] = oldQuantity;
+    data['new_quantity'] = newQuantity;
+    data['is_multiple'] = isMultiple;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    return data;
+  }
+}
+
+class RepeatHistoryLog {
+  String? serviceId;
+  int? quantity;
+  String? variantKey;
+  String? serviceName;
+  double? serviceCost;
+  double? discountAmount;
+  double? taxAmount;
+  double? totalCost;
+  String? repeatDetailsId;
+
+  RepeatHistoryLog(
+      {this.serviceId,
+        this.quantity,
+        this.variantKey,
+        this.serviceName,
+        this.serviceCost,
+        this.discountAmount,
+        this.taxAmount,
+        this.totalCost,
+        this.repeatDetailsId});
+
+  RepeatHistoryLog.fromJson(Map<String, dynamic> json) {
+    serviceId = json['service_id'];
+    quantity = json['quantity'];
+    variantKey = json['variant_key'].toString();
+    serviceName = json['service_name'];
+    serviceCost = double.tryParse(json['service_cost'].toString());
+    discountAmount = double.tryParse(json['discount_amount'].toString());
+    taxAmount = double.tryParse(json['tax_amount'].toString());
+    totalCost = double.tryParse(json['total_cost'].toString());
+    repeatDetailsId = json['repeat_details_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['service_id'] = serviceId;
+    data['quantity'] = quantity;
+    data['variant_key'] = variantKey;
+    data['service_name'] = serviceName;
+    data['service_cost'] = serviceCost;
+    data['discount_amount'] = discountAmount;
+    data['tax_amount'] = taxAmount;
+    data['total_cost'] = totalCost;
+    data['repeat_details_id'] = repeatDetailsId;
+    return data;
+  }
+}
+
+
+
+
+
 

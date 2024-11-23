@@ -103,6 +103,7 @@ class Review {
   Customer? customer;
   ProviderData? provider;
   ReviewReply? reviewReply;
+  int? isExpended;
 
   Review(
       {this.id,
@@ -117,7 +118,8 @@ class Review {
         this.updatedAt,
         this.customer,
         this.reviewReply,
-        this.provider
+        this.provider,
+        this.isExpended,
       });
 
   Review.fromJson(Map<String, dynamic> json) {
@@ -140,6 +142,7 @@ class Review {
     provider = json['provider'] != null
         ? ProviderData.fromJson(json['provider'])
         : null;
+    isExpended = 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -201,13 +204,13 @@ class Rating {
 
 class RatingGroupCount {
   double? reviewRating;
-  double? total;
+  int? total;
 
   RatingGroupCount({this.reviewRating, this.total});
 
   RatingGroupCount.fromJson(Map<String, dynamic> json) {
     reviewRating = json['review_rating'] != null ? double.parse(json['review_rating'].toString()) : null;
-    total = json['total'] != null ? double.parse(json['total'].toString()) : null;
+    total = json['total'] != null ? int.parse(json['total'].toString()) : null;
   }
 
   Map<String, dynamic> toJson() {

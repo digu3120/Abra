@@ -19,7 +19,8 @@ class CheckoutRepo extends GetxService {
 
   Future<Response> placeBookingRequest({
     required String paymentMethod, String? serviceAddressID, required AddressModel serviceAddress,String? schedule,
-    required String zoneId, required int isPartial, required String offlinePaymentId, required String customerInformation
+    required String zoneId, required int isPartial, required String offlinePaymentId, required String customerInformation,
+    required String serviceType, String? bookingType, String? dates
   }) async {
     String address = jsonEncode(serviceAddress);
     return await apiClient.postData(AppConstants.placeRequest, {
@@ -31,7 +32,10 @@ class CheckoutRepo extends GetxService {
       "service_address" : address,
       "is_partial" : isPartial,
       "offline_payment_id" : offlinePaymentId,
-      "customer_information" : customerInformation
+      "customer_information" : customerInformation,
+      "service_type": serviceType,
+      "booking_type": bookingType,
+      "dates": dates
     });
   }
 }

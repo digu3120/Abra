@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:convert';
+
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:demandium/utils/core_export.dart';
@@ -196,7 +198,6 @@ class MyInAppBrowser extends InAppBrowser {
         if(fromPage == "checkout"){
 
           String token = StringParser.parseString(url, "token");
-
           Get.find<CartController>().getCartListFromServer();
           Get.back();
           Get.offNamed(RouteHelper.getCheckoutRoute(RouteHelper.checkout,'complete','null',token: token));
@@ -207,9 +208,30 @@ class MyInAppBrowser extends InAppBrowser {
           String uuid = const Uuid().v1();
           Get.offNamed(RouteHelper.getMyWalletScreen(flag : 'success', token: uuid));
         }
+        else if(fromPage == "repeat-booking"){
+          Get.back();
+
+          String? subBookingId;
+          String? token = StringParser.parseString(url, "token");
+
+          try{
+            subBookingId = StringParser.parseString(utf8.decode(base64Url.decode(token)), "booking_repeat_id");
+          }catch(e){
+            if (kDebugMode) {
+              print(e);
+            }
+          }
+          if(subBookingId !=null){
+            Get.find<BookingDetailsController>().getSubBookingDetails(bookingId: subBookingId);
+          }
+          customSnackBar("paid_successfully".tr, type: ToasterMessageType.success);
+        }
       } else if (isFailed || isCancel) {
         if(fromPage=="add-fund"){
           Get.offNamed(RouteHelper.getMyWalletScreen(flag : 'failed'));
+        }else if(fromPage == "repeat-booking"){
+          Get.back();
+          customSnackBar("payment_failed_try_again".tr, type: ToasterMessageType.error, showDefaultSnackBar: false);
         }else{
           Get.offNamed(RouteHelper.getOrderSuccessRoute('fail'));
         }

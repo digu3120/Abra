@@ -8,8 +8,8 @@ class ServiceBookingRepo{
   ServiceBookingRepo({required this.sharedPreferences,required this.apiClient});
 
 
-  Future<Response> getBookingList({required int offset, required String bookingStatus})async{
-    return await apiClient.getData("${AppConstants.bookingList}?limit=10&offset=$offset&booking_status=$bookingStatus");
+  Future<Response> getBookingList({required int offset, required String bookingStatus, required String serviceType})async{
+    return await apiClient.getData("${AppConstants.bookingList}?limit=10&offset=$offset&booking_status=$bookingStatus&service_type=$serviceType");
   }
 
   Future<Response> getBookingDetails({required String bookingID})async{

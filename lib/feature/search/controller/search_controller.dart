@@ -301,7 +301,7 @@ class AllSearchController extends GetxController implements GetxService {
       update();
     }
 
-    }
+  }
 
   void resetCategoryCheckedList({bool shouldUpdate = true}){
     Get.find<CategoryController>().categoryList?.forEach((element) {

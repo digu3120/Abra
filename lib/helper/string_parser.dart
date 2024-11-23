@@ -8,7 +8,7 @@ class StringParser {
 
       for (var element in parts) {
         if(element.contains(parseBy)){
-          tokenPart = element.split("=");
+          tokenPart = element.split("$parseBy=");
         }
       }
       if(tokenPart.isNotEmpty){

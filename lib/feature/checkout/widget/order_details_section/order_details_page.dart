@@ -1,3 +1,5 @@
+import 'package:demandium/feature/checkout/widget/choose_booking_type_widget.dart';
+import 'package:demandium/feature/checkout/widget/order_details_section/repeat_booking_schedule_widget.dart';
 import 'package:demandium/utils/core_export.dart';
 import 'package:get/get.dart';
 
@@ -6,15 +8,29 @@ class OrderDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isLoggedIn  = Get.find<AuthController>().isLoggedIn();
     ConfigModel configModel = Get.find<SplashController>().configModel;
-    bool showWalletPaymentCart = Get.find<AuthController>().isLoggedIn() && Get.find<CartController>().walletBalance > 0
-        && configModel.content?.walletStatus == 1 && configModel.content?.partialPayment == 1;
+
     return GetBuilder<CartController>(builder: (cartController){
       return SingleChildScrollView( child: Column(children: [
 
-        const Padding(padding: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-          child: ServiceSchedule(),
-        ),
+
+        GetBuilder<ScheduleController>(builder: (scheduleController){
+          return  Padding(padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+            child: Column(children: [
+
+              isLoggedIn && configModel.content?.repeatBooking == 1 ? const ChooseBookingTypeWidget() : const SizedBox(),
+              const SizedBox(height: Dimensions.paddingSizeSmall,),
+
+              (scheduleController.selectedServiceType == ServiceType.regular || !isLoggedIn) ?
+              const ServiceSchedule() : const RepeatBookingScheduleWidget(),
+
+            ]),
+          );
+        }),
+
+        const SizedBox(height: Dimensions.paddingSizeDefault,),
         const Padding(padding: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
           child: AddressInformation(),
         ),
@@ -24,11 +40,10 @@ class OrderDetailsPage extends StatelessWidget {
 
         Get.find<AuthController>().isLoggedIn() ? const ShowVoucher() : const SizedBox(),
 
-        showWalletPaymentCart? const WalletPaymentCard(fromPage: 'checkout',): const SizedBox(),
-
         const CartSummery()
 
       ]));
     });
   }
 }
+

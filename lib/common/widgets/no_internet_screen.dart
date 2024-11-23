@@ -8,16 +8,17 @@ class NoInternetScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.025),
+      padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.025),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(Images.noInternet, width: 150, height: 150),
-            Text('oops'.tr, style: ubuntuBold.copyWith(
-              fontSize: 30,
-              color: Theme.of(context).textTheme.bodyLarge!.color,
-            )),
+            Text('oops'.tr,
+                style: ubuntuBold.copyWith(
+                  fontSize: 30,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
+                )),
             const SizedBox(height: Dimensions.paddingSizeExtraSmall),
             Text(
               'no_internet_connection'.tr,
@@ -30,9 +31,11 @@ class NoInternetScreen extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 40),
               child: CustomButton(
                 onPressed: () async {
-                  List<ConnectivityResult> result = await Connectivity().checkConnectivity();
-                  if( result.first != ConnectivityResult.none) {
-                    Navigator.pushReplacement(Get.context!, MaterialPageRoute(builder: (_) => child!));
+                  List<ConnectivityResult> result =
+                      await Connectivity().checkConnectivity();
+                  if (result.first != ConnectivityResult.none) {
+                    Navigator.pushReplacement(Get.context!,
+                        MaterialPageRoute(builder: (_) => child!));
                   }
                 },
                 buttonText: 'retry'.tr,

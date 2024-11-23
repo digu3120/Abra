@@ -76,7 +76,7 @@ class CheckoutHeaderWidget extends StatelessWidget {
           ]),
         ),
 
-        Padding( padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault,left: 20.0,right: 20.0),
+        Padding( padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault,left: Dimensions.paddingSizeDefault,right: Dimensions.paddingSizeDefault),
           child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,  crossAxisAlignment: CrossAxisAlignment.center, children:  [
             CustomText( text: "booking_details".tr, isActive :controller.currentPageState == PageState.orderDetails && PageState.orderDetails.name == pageState),
             Padding(padding: const EdgeInsets.only(right: 25.0),

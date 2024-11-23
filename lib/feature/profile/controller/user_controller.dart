@@ -53,16 +53,18 @@ class UserController extends GetxController implements GetxService {
       ApiChecker.checkApi(response);
     }
 
-    AddressModel addressModel = Get.find<LocationController>().getUserAddress()!;
+    AddressModel? addressModel = Get.find<LocationController>().getUserAddress();
 
-    if(_userInfoModel !=null && (addressModel.contactPersonNumber == "" || addressModel.contactPersonNumber == null)){
+    if(_userInfoModel !=null && (addressModel?.contactPersonNumber == "" || addressModel?.contactPersonNumber == null)){
       String? firstName;
       if( Get.find<UserController>().userInfoModel?.phone!=null && Get.find<UserController>().userInfoModel?.fName !=null){
         firstName = "${Get.find<UserController>().userInfoModel?.fName} ";
       }
-      addressModel.contactPersonNumber = firstName !=null? Get.find<UserController>().userInfoModel?.phone ?? "" : "";
-      addressModel.contactPersonName = firstName!=null ? "$firstName${Get.find<UserController>().userInfoModel?.lName ?? "" }" : "";
-      Get.find<LocationController>().saveUserAddress(addressModel);
+      addressModel?.contactPersonNumber = firstName !=null? Get.find<UserController>().userInfoModel?.phone ?? "" : "";
+      addressModel?.contactPersonName = firstName!=null ? "$firstName${Get.find<UserController>().userInfoModel?.lName ?? "" }" : "";
+      if(addressModel !=null){
+        Get.find<LocationController>().saveUserAddress(addressModel);
+      }
     }
     _isLoading = false;
     update();

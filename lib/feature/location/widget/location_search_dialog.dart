@@ -3,13 +3,14 @@ import 'package:demandium/utils/core_export.dart';
 
 class LocationSearchDialog extends StatelessWidget {
   final GoogleMapController? mapController;
-  const LocationSearchDialog({super.key, required this.mapController});
+  final bool hasTitleWidget;
+  const LocationSearchDialog({super.key, required this.mapController,this.hasTitleWidget = false});
 
   @override
   Widget build(BuildContext context) {
 
     return Container(
-      margin: EdgeInsets.only(top: ResponsiveHelper.isDesktop(context) ? 120 : 0),
+      margin: EdgeInsets.only(top: ResponsiveHelper.isDesktop(context) && hasTitleWidget ? 180 :  ResponsiveHelper.isDesktop(context) ? 120 : 0),
       padding: const EdgeInsets.symmetric(horizontal:Dimensions.paddingSizeSmall),
       alignment: Alignment.topCenter,
       child: Material(

@@ -5,6 +5,7 @@ class CouponModel {
   String? discountId;
   int? isActive;
   int? isUsed;
+  int? remainingUses;
   String? createdAt;
   String? updatedAt;
   Discount? discount;
@@ -16,6 +17,7 @@ class CouponModel {
         this.discountId,
         this.isActive,
         this.isUsed,
+        this.remainingUses,
         this.createdAt,
         this.updatedAt,
         this.discount});
@@ -27,6 +29,7 @@ class CouponModel {
     discountId = json['discount_id'];
     isActive = int.tryParse(json['is_active'].toString());
     isUsed = int.tryParse(json['is_used'].toString());
+    remainingUses = int.tryParse(json['remaining_uses'].toString());
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     discount = json['discount'] != null

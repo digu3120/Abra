@@ -8,6 +8,9 @@ enum SendOtpType {forgetPassword, firebase, verification}
 
 enum EditProfileTabControllerState {generalInfo,accountIno}
 enum ToasterMessageType {success, error, info}
+enum RepeatBookingType {daily, weekly, custom}
+
+enum ServiceType { all ,regular, repeat}
 
 enum HtmlType {
   termsAndCondition,

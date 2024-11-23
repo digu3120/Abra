@@ -84,7 +84,7 @@ class MyFavoriteController extends GetxController implements GetxService{
 
     if(response.statusCode == 200 && response.body['response_code'] == "default_delete_200"){
       _providerList?.removeWhere((element) => element.id == providerId);
-      Get.find<ProviderBookingController>().updateIsFavoriteValue(0, providerId, shouldUpdate: true);
+      Get.find<ProviderBookingController>().updateProviderIsFavoriteValue(0, providerId, shouldUpdate: true);
     }
     update();
   }

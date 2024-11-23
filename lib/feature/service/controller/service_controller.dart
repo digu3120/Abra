@@ -266,8 +266,9 @@ class ServiceController extends GetxController implements GetxService {
 
   Future<void> updateIsFavoriteStatus({required String serviceId, required int currentStatus}) async {
     _apiHitCount++;
-    updateIsFavoriteValue( currentStatus == 1 ? 0 : 1, serviceId);
-    update();
+
+   // updateIsFavoriteValue( currentStatus == 1 ? 0 : 1, serviceId);
+   // update();
 
     Response response = await serviceRepo.updateIsFavoriteStatus(serviceId: serviceId);
     _apiHitCount--;
@@ -352,6 +353,7 @@ class ServiceController extends GetxController implements GetxService {
     }
 
     Get.find<AllSearchController>().updateIsFavoriteValue(status, serviceId, shouldUpdate: shouldUpdate);
+    Get.find<ProviderBookingController>().updateServiceIsFavoriteValue(status, serviceId, shouldUpdate: shouldUpdate);
 
     if(shouldUpdate){
       update();

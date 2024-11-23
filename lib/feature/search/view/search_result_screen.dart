@@ -9,14 +9,13 @@ class SearchResultScreen extends StatefulWidget {
   final String? queryText;
   final String? fromPage;
 
-  const SearchResultScreen({super.key, required this.queryText, this.fromPage}) ;
+  const SearchResultScreen({super.key, required this.queryText, this.fromPage});
 
   @override
   State<SearchResultScreen> createState() => _SearchResultScreenState();
 }
 
 class _SearchResultScreenState extends State<SearchResultScreen> {
-
   final ScrollController scrollController = ScrollController();
 
   @override
@@ -26,80 +25,98 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   }
 
   _loadDart() async {
-
     Get.find<AllSearchController>().clearAllFilterValue(shouldUpdate: false);
-    Get.find<AllSearchController>().updateSortByType(widget.fromPage, shouldUpdate: false);
-    Get.find<AllSearchController>().searchData(query:widget.queryText!, offset: 1, shouldUpdate: false);
+    Get.find<AllSearchController>()
+        .updateSortByType(widget.fromPage, shouldUpdate: false);
+    Get.find<AllSearchController>()
+        .searchData(query: widget.queryText!, offset: 1, shouldUpdate: false);
     await Get.find<CategoryController>().getCategoryList(1, false);
-    Get.find<AllSearchController>().resetCategoryCheckedList(shouldUpdate: false);
-    Get.find<AllSearchController>().populatedSearchController(widget.queryText ?? "", shouldUpdate: false);
+    Get.find<AllSearchController>()
+        .resetCategoryCheckedList(shouldUpdate: false);
+    Get.find<AllSearchController>()
+        .populatedSearchController(widget.queryText ?? "", shouldUpdate: false);
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: ()  => _exitApp(),
+      onWillPop: () => _exitApp(),
       child: Scaffold(
-        endDrawer:ResponsiveHelper.isDesktop(context) ? const MenuDrawer():null,
+        endDrawer:
+            ResponsiveHelper.isDesktop(context) ? const MenuDrawer() : null,
         appBar: const SearchAppBar(backButton: true),
-
-        body: GetBuilder<AllSearchController>(builder: (searchController){
-          return FooterBaseView(
-            scrollController: scrollController,
-            child: searchController.searchServiceList == null ? const SearchShimmerWidget() :
-            SizedBox(
-              width: Dimensions.webMaxWidth,
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                  Container(
-                    color: Theme.of(context).hoverColor,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault,vertical:  Dimensions.paddingSizeDefault),
-                        child: RichText(
-                          text: TextSpan(
-                            style: DefaultTextStyle.of(context).style,
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: " ${searchController.serviceModel?.content?.servicesContent?.total ?? 0} ",
-                                style: ubuntuBold.copyWith(fontSize: Dimensions.fontSizeDefault),
+        body: GetBuilder<AllSearchController>(
+          builder: (searchController) {
+            return FooterBaseView(
+              scrollController: scrollController,
+              child: searchController.searchServiceList == null
+                  ? const SearchShimmerWidget()
+                  : SizedBox(
+                      width: Dimensions.webMaxWidth,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            color: Theme.of(context).hoverColor,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Dimensions.paddingSizeDefault,
+                                    vertical: Dimensions.paddingSizeDefault),
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: DefaultTextStyle.of(context).style,
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text:
+                                            " ${searchController.serviceModel?.content?.servicesContent?.total ?? 0} ",
+                                        style: ubuntuBold.copyWith(
+                                            fontSize:
+                                                Dimensions.fontSizeDefault),
+                                      ),
+                                      TextSpan(
+                                        text: 'results_found'.tr,
+                                        style: ubuntuRegular.copyWith(
+                                            fontSize:
+                                                Dimensions.fontSizeDefault),
+                                      ),
+                                    ],
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                              TextSpan(
-                                text: 'results_found'.tr,
-                                style: ubuntuRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
-                              ),
-                            ],
+                            ),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                          const SearchFilterButtonWidget(),
+                          searchController.sortedByList.isNotEmpty &&
+                                  !ResponsiveHelper.isDesktop(context)
+                              ? const AlreadyFilteredWidget()
+                              : const SizedBox(),
+                          PaginatedListView(
+                            scrollController: scrollController,
+                            totalSize: searchController
+                                .serviceModel?.content?.servicesContent?.total,
+                            offset: searchController.serviceModel?.content
+                                ?.servicesContent?.currentPage,
+                            onPaginate: (int offset) async =>
+                                await searchController.searchData(
+                                    query:
+                                        searchController.searchController.text,
+                                    offset: offset,
+                                    shouldUpdate: false,
+                                    reload: false),
+                            itemView: ServiceViewVertical(
+                              service: searchController.searchServiceList!,
+                              noDataText: 'no_service_found'.tr,
+                              noDataType: NoDataType.search,
+                              fromPage: "search_page",
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                  ),
-
-
-                  const SearchFilterButtonWidget(),
-
-                  searchController.sortedByList.isNotEmpty && !ResponsiveHelper.isDesktop(context) ? const AlreadyFilteredWidget() : const SizedBox(),
-
-                  PaginatedListView(
-                    scrollController: scrollController,
-                    totalSize: searchController.serviceModel?.content?.servicesContent?.total,
-                    offset: searchController.serviceModel?.content?.servicesContent?.currentPage,
-                    onPaginate: (int offset) async => await searchController.searchData(query: searchController.searchController.text, offset: offset, shouldUpdate: false , reload: false),
-                    itemView: ServiceViewVertical(
-                      service: searchController.searchServiceList!,
-                      noDataText: 'no_service_found'.tr,
-                      noDataType: NoDataType.search,
-                      fromPage:"search_page",
-                    ),
-                  )
-
-                ],
-              ),
-            ),
-          );
+            );
           },
         ),
       ),

@@ -14,7 +14,8 @@ class _DemoResetDialogWidgetState extends State<DemoResetDialogWidget> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusExtraLarge)),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Dimensions.radiusExtraLarge)),
       insetPadding: const EdgeInsets.all(30),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Container(
@@ -25,32 +26,35 @@ class _DemoResetDialogWidgetState extends State<DemoResetDialogWidget> {
         width: 500,
         padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.error_outline, color: Theme.of(context).primaryColor, size: 55),
+          Icon(Icons.error_outline,
+              color: Theme.of(context).primaryColor, size: 55),
           const SizedBox(height: Dimensions.paddingSizeLarge),
-
-          Text('session_time_out'.tr, style: ubuntuBold.copyWith(fontSize: Dimensions.fontSizeExtraLarge)),
+          Text('session_time_out'.tr,
+              style:
+                  ubuntuBold.copyWith(fontSize: Dimensions.fontSizeExtraLarge)),
           const SizedBox(height: Dimensions.paddingSizeLarge),
-
           Text(
             'though_it_is_demo_text'.tr,
             textAlign: TextAlign.center,
             style: ubuntuMedium.copyWith(fontSize: Dimensions.fontSizeDefault),
           ),
           const SizedBox(height: Dimensions.paddingSizeTextFieldGap),
-
-          CustomButton(isLoading: _isLoading, buttonText: 'okay'.tr, onPressed: () {
-            setState(() {
-              _isLoading = true;
-            });
-            Get.find<SplashController>().getConfigData().then((isSuccess) {
-              if(isSuccess) {
+          CustomButton(
+              isLoading: _isLoading,
+              buttonText: 'okay'.tr,
+              onPressed: () {
                 setState(() {
-                  _isLoading = false;
+                  _isLoading = true;
                 });
-                Get.offAllNamed(RouteHelper.getInitialRoute());
-              }
-            });
-          }),
+                Get.find<SplashController>().getConfigData().then((isSuccess) {
+                  if (isSuccess) {
+                    setState(() {
+                      _isLoading = false;
+                    });
+                    Get.offAllNamed(RouteHelper.getInitialRoute());
+                  }
+                });
+              }),
         ]),
       ),
     );

@@ -21,12 +21,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
 
+    bool pickedAddress = Get.find<LocationController>().getUserAddress() != null;
+
     final profileCartModelList = [
       ProfileCardItemModel( 'my_address'.tr, Images.address,Get.find<AuthController>().isLoggedIn() ?
       RouteHelper.getAddressRoute('fromProfileScreen') : RouteHelper.getNotLoggedScreen(RouteHelper.profile,"profile"),
       ),
       ProfileCardItemModel(
-        'notifications'.tr, Images.notification, RouteHelper.getNotificationRoute(),
+        'notifications'.tr, Images.notification,
+        pickedAddress  ? RouteHelper.getNotificationRoute() : RouteHelper.getPickMapRoute( RouteHelper.notification , true, 'false', null, null),
       ),
       if(!Get.find<AuthController>().isLoggedIn() )
       ProfileCardItemModel(
@@ -36,7 +39,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       if(Get.find<AuthController>().isLoggedIn() )
         ProfileCardItemModel(
-          'suggest_new_service'.tr, Images.suggestServiceIcon,RouteHelper.getNewSuggestedServiceScreen() ,
+          'suggest_new_service'.tr, Images.suggestServiceIcon,
+          pickedAddress  ?  RouteHelper.getNewSuggestedServiceScreen() :  RouteHelper.getPickMapRoute( RouteHelper.suggestService , true, 'false', null, null) ,
         ),
 
       if(Get.find<AuthController>().isLoggedIn() )
@@ -54,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return CustomPopScopeWidget(
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        endDrawer:ResponsiveHelper.isDesktop(context) ? const MenuDrawer():null,
+        endDrawer:ResponsiveHelper.isDesktop(context) ? const MenuDrawer() : null,
         appBar: CustomAppBar(
           title: 'profile'.tr,
           centerTitle: true,
@@ -100,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               if(
                               Get.find<AuthController>().isLoggedIn()) {
                                 Get.dialog(ConfirmationDialog(
-                                    icon: Images.logoutIcon, description: 'are_you_sure_to_logout'.tr, isLogOut: true, onYesPressed: ()async {
+                                    icon: Images.logoutIcon, description: 'are_you_sure_to_logout'.tr, onYesPressed: ()async {
                                   Get.find<AuthController>().clearSharedData();
                                   Get.find<AuthController>().googleLogout();
                                   Get.find<AuthController>().signOutWithFacebook();
@@ -116,10 +120,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       icon: Images.deleteProfile,
                                       title: 'are_you_sure_to_delete_your_account'.tr,
                                       description: 'it_will_remove_your_all_information'.tr,
-                                      isLogOut: true,
-                                      yesText: 'delete',
-                                      noText: 'cancel',
-                                      descriptionTextColor: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.5),
+                                      yesButtonText: 'delete',
+                                      noButtonText: 'cancel',
                                       onYesPressed: () => userController.removeUser()),
                                   useSafeArea: false
                               );

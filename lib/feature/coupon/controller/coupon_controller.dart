@@ -52,7 +52,7 @@ class CouponController extends GetxController implements GetxService{
     _isLoading = true;
     update();
 
-    Response response = await couponRepo.applyCoupon(couponModel.couponCode!);
+    Response response = await couponRepo.applyCoupon(couponModel.couponCode!, couponModel.id!);
     if(response.statusCode == 200 && response.body['response_code'] == 'coupon_applied_200'){
 
 

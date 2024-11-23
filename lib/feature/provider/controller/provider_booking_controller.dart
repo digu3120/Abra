@@ -103,6 +103,10 @@ class ProviderBookingController extends GetxController implements GetxService {
           _providerList = [];
           _providerList!.addAll(_providerModel?.content?.data??[]);
         }
+        _providerList?.forEach((element) {
+          double distance = MapHelper.getDistanceBetweenUserCurrentLocationAndProvider(Get.find<LocationController>().getUserAddress()!, element);
+          element.distance = distance;
+        });
 
       } else {
         ApiChecker.checkApi(response);
@@ -161,11 +165,9 @@ class ProviderBookingController extends GetxController implements GetxService {
 
   int _apiHitCount = 0;
 
-  Future<void> updateIsFavoriteStatus({ required String providerId, required int index}) async {
+  Future<void> updateIsFavoriteStatus({ required String providerId,  int? index}) async {
 
     _apiHitCount ++;
-    updateIsFavoriteValue(providerList?[index].isFavorite ==1 ? 0 : 1,providerId);
-    update();
     Response response = await providerBookingRepo.updateIsFavoriteStatus(serviceId: providerId);
 
     _apiHitCount --;
@@ -173,17 +175,21 @@ class ProviderBookingController extends GetxController implements GetxService {
     if(response.statusCode == 200 && (response.body['response_code'] == "provider_favorite_store_200" || response.body['response_code'] == "provider_remove_favorite_200")){
       if(response.body['content']['status'] !=null){
         status  = response.body['content']['status'];
-        updateIsFavoriteValue(status,providerId);
+        updateProviderIsFavoriteValue(status,providerId);
         customSnackBar(response.body['message'], type: status == 1 ? ToasterMessageType.success : ToasterMessageType.error);
       }
     }
 
+    if(_providerDetailsContent != null && _providerDetailsContent?.provider?.id == providerId){
+      int? status = _providerDetailsContent?.provider?.isFavorite;
+      _providerDetailsContent?.provider?.isFavorite = status == 1 ? 0 : 1;
+    }
     if(_apiHitCount ==0){
       update();
     }
   }
 
-  updateIsFavoriteValue(int status, String providerId, {bool shouldUpdate = false, bool fromProviderBooking = true}){
+  updateProviderIsFavoriteValue(int status, String providerId, {bool shouldUpdate = false, bool fromProviderBooking = true}){
 
     int? index = _providerList?.indexWhere((element) => element.id == providerId);
     if(index !=null && index > -1){
@@ -191,8 +197,22 @@ class ProviderBookingController extends GetxController implements GetxService {
     }
     Get.find<AdvertisementController>().updateIsFavoriteValue(status, providerId, shouldUpdate: true);
     if(fromProviderBooking){
-      Get.find<ExploreProviderController>().updateIsFavoriteValue(status, providerId, shouldUpdate: true, fromExploreProviderScreen: false);
+      Get.find<NearbyProviderController>().updateIsFavoriteValue(status, providerId, shouldUpdate: true, fromExploreProviderScreen: false);
 
+    }
+    if(shouldUpdate){
+      update();
+    }
+  }
+
+  updateServiceIsFavoriteValue(int status, String serviceId, {bool shouldUpdate = false}){
+    if(_providerDetailsContent !=null && _providerDetailsContent?.subCategories != null){
+      for(int categoryIndex = 0; categoryIndex < (_providerDetailsContent?.subCategories?.length ?? 0) ; categoryIndex ++){
+        int? serviceIndex = _providerDetailsContent?.subCategories![categoryIndex].services?.indexWhere((element) => element.id == serviceId);
+        if(serviceIndex !=null && serviceIndex>-1){
+          _providerDetailsContent?.subCategories?[categoryIndex].services?[serviceIndex].isFavorite = status;
+        }
+      }
     }
     if(shouldUpdate){
       update();
@@ -385,6 +405,23 @@ class ProviderBookingController extends GetxController implements GetxService {
 
     update();
   }
+
+  updateProviderReviewExpendedStatus({int? index, bool shouldUpdate = true}){
+    if(index  !=null){
+      _reviewList?[index].isExpended = 1;
+      if(shouldUpdate){
+        update();
+      }
+    } else{
+      if(_reviewList !=null && reviewList!.isNotEmpty){
+        for(int index = 0; index < _reviewList!.length ; index ++){
+          _reviewList?[index].isExpended = 0;
+        }
+      }
+    }
+  }
+
+
 
 
 }

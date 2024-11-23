@@ -58,6 +58,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires access to the camera to upload customer profile picture.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>This app needs access to location to manage coverage area to get a service from service provider</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location to manage coverage area to get a service from service provider.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

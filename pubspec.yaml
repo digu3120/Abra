@@ -98,13 +98,13 @@ flutter:
     - assets/
 
   fonts:
-    - family: PolySans
+    - family: Ubuntu
       fonts:
-        - asset: assets/font/PolySans-Light.ttf
-          weight: 800
-        - asset: assets/font/PolySans-Regular.ttf
+        - asset: assets/font/Roboto-Light.ttf
+          weight: 300
+        - asset: assets/font/Roboto-Regular.ttf
+          weight: 400
+        - asset: assets/font/Roboto-Medium.ttf
           weight: 500
-        - asset: assets/font/PolySans-Medium.ttf
-          weight: 600
-        - asset: assets/font/PolySans-Bold.ttf
-          weight: 800
+        - asset: assets/font/Roboto-Bold.ttf
+          weight: 700

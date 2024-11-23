@@ -3,8 +3,7 @@ import 'package:get/get.dart';
 import 'package:demandium/utils/core_export.dart';
 
 class SettingScreen extends StatelessWidget {
-
-   const SettingScreen({super.key}) ;
+  const SettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,24 +18,33 @@ class SettingScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           boxShadow: Get.find<ThemeController>().darkTheme ? null : cardShadow,
-          borderRadius: const BorderRadius.all(Radius.circular(Dimensions.radiusSmall)),
+          borderRadius:
+              const BorderRadius.all(Radius.circular(Dimensions.radiusSmall)),
         ),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              GetBuilder<ThemeController>(builder: (themeController){
+              GetBuilder<ThemeController>(builder: (themeController) {
                 return CupertinoSwitch(
                     activeColor: Theme.of(context).colorScheme.primary,
-                    value: themeController.darkTheme, onChanged: (value){
-                  themeController.toggleTheme();
-                });
+                    value: themeController.darkTheme,
+                    onChanged: (value) {
+                      themeController.toggleTheme();
+                    });
               }),
-              const SizedBox(height: Dimensions.paddingSizeDefault,),
-              Text(Get.isDarkMode ? "light_mode".tr:"dark_mode".tr ,style: ubuntuRegular.copyWith(fontSize: Dimensions.fontSizeLarge),),
+              const SizedBox(
+                height: Dimensions.paddingSizeDefault,
+              ),
+              Text(
+                Get.isDarkMode ? "light_mode".tr : "dark_mode".tr,
+                style:
+                    ubuntuRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
+              ),
             ],
           ),
-        ),),
+        ),
+      ),
       Container(
         padding: const EdgeInsets.fromLTRB(
           Dimensions.paddingSizeDefault,
@@ -46,41 +54,48 @@ class SettingScreen extends StatelessWidget {
         ),
         decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
-            boxShadow: Get.find<ThemeController>().darkTheme ? null : cardShadow,
-            borderRadius: const BorderRadius.all(Radius.circular(Dimensions.radiusSmall))
-        ),
+            boxShadow:
+                Get.find<ThemeController>().darkTheme ? null : cardShadow,
+            borderRadius: const BorderRadius.all(
+                Radius.circular(Dimensions.radiusSmall))),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              GetBuilder<AuthController>(builder: (authController){
+              GetBuilder<AuthController>(builder: (authController) {
                 return CupertinoSwitch(
-                  activeColor: Theme.of(context).colorScheme.primary,
-                    value: authController.isNotificationActive(), onChanged: (value){
-                  authController.toggleNotificationSound();
-                });
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    value: authController.isNotificationActive(),
+                    onChanged: (value) {
+                      authController.toggleNotificationSound();
+                    });
               }),
-              const SizedBox(height: Dimensions.paddingSizeDefault,),
+              const SizedBox(
+                height: Dimensions.paddingSizeDefault,
+              ),
               Text(
                 'notification_sound'.tr,
-                style: ubuntuRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
+                style:
+                    ubuntuRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
                 textAlign: TextAlign.center,
-
               ),
             ],
           ),
-        ),),
+        ),
+      ),
     ];
 
     return Scaffold(
-      endDrawer:ResponsiveHelper.isDesktop(context) ? const MenuDrawer():null,
+      endDrawer:
+          ResponsiveHelper.isDesktop(context) ? const MenuDrawer() : null,
       appBar: CustomAppBar(
         isBackButtonExist: true,
-        bgColor: Theme.of(context).primaryColor, title: 'settings'.tr,),
-
+        bgColor: Theme.of(context).primaryColor,
+        title: 'settings'.tr,
+      ),
       body: FooterBaseView(
-        isScrollView:true,
+        isScrollView: true,
         //isCenter:false,
         child: SizedBox(
           width: Dimensions.webMaxWidth,
@@ -88,14 +103,24 @@ class SettingScreen extends StatelessWidget {
             shrinkWrap: true,
             key: UniqueKey(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisSpacing: Dimensions.paddingSizeLarge ,
-              mainAxisSpacing: ResponsiveHelper.isDesktop(context) ? Dimensions.paddingSizeLarge : Dimensions.paddingSizeLarge ,
+              crossAxisSpacing: Dimensions.paddingSizeLarge,
+              mainAxisSpacing: ResponsiveHelper.isDesktop(context)
+                  ? Dimensions.paddingSizeLarge
+                  : Dimensions.paddingSizeLarge,
               childAspectRatio: 1,
-              crossAxisCount: ResponsiveHelper.isDesktop(context) ? 4 : ResponsiveHelper.isTab(context) ? 3 : 2,
+              crossAxisCount: ResponsiveHelper.isDesktop(context)
+                  ? 4
+                  : ResponsiveHelper.isTab(context)
+                      ? 3
+                      : 2,
             ),
-            physics:  const NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: settingsItems.length,
-            padding: const EdgeInsets.only(top: 50 ,right: Dimensions.paddingSizeDefault,left: Dimensions.paddingSizeDefault,bottom: Dimensions.paddingSizeDefault),
+            padding: const EdgeInsets.only(
+                top: 50,
+                right: Dimensions.paddingSizeDefault,
+                left: Dimensions.paddingSizeDefault,
+                bottom: Dimensions.paddingSizeDefault),
             itemBuilder: (context, index) {
               return settingsItems.elementAt(index);
             },
@@ -104,5 +129,4 @@ class SettingScreen extends StatelessWidget {
       ),
     );
   }
-
 }

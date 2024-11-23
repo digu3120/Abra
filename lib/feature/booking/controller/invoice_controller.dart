@@ -251,7 +251,7 @@ class InvoiceController {
       BookingDetailsController controller,
       String paymentStatus) {
     double serviceDiscount = 0;
-    bookingDetailsContent.detail?.forEach((service) {
+    bookingDetailsContent.bookingDetails?.forEach((service) {
       serviceDiscount = serviceDiscount + service.discountAmount!;
     });
 
@@ -289,11 +289,11 @@ class InvoiceController {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                buildText(
-                  title: 'Sub Total(VAT excluded)',
-                  value: controller.allTotalCost.toString(),
-                  unite: true,
-                ),
+                // buildText(
+                //   title: 'Sub Total(VAT excluded)',
+                //   value: controller.allTotalCost.toString(),
+                //   unite: true,
+                // ),
 
                 buildText(
                   title: 'Service discount',

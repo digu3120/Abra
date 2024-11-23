@@ -1,3 +1,4 @@
+import 'package:demandium/feature/home/widget/nearby_provider_listview.dart';
 import 'package:get/get.dart';
 import 'package:demandium/utils/core_export.dart';
 
@@ -16,6 +17,7 @@ class HomeScreen extends StatefulWidget {
       Get.find<ServiceController>().getPopularServiceList(1,reload);
       Get.find<ServiceController>().getTrendingServiceList(1,reload);
       Get.find<ProviderBookingController>().getProviderList(1,reload);
+      Get.find<NearbyProviderController>().getProviderList(1,true);
       Get.find<CampaignController>().getCampaignList(reload);
       Get.find<ServiceController>().getRecommendedServiceList(1, reload);
       Get.find<CheckOutController>().getOfflinePaymentMethod(false);
@@ -154,6 +156,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             const SizedBox(height: Dimensions.paddingSizeLarge),
                             RecommendedServiceView(height: isLtr ? 210 : 225,),
+
+                            SizedBox(height: (providerBooking == 1 && (isAvailableProvider || providerController.providerList == null)) ? Dimensions.paddingSizeLarge : 0,),
+
+                            (providerBooking == 1 && (isAvailableProvider || providerController.providerList == null)) ?
+                            NearbyProviderListview(height:  isLtr ? 190 : 205) : const SizedBox(),
 
 
                             (providerBooking == 1 && (isAvailableProvider || providerController.providerList == null)) ?

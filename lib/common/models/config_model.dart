@@ -90,6 +90,7 @@ class ConfigContent {
   MaintenanceMode? maintenanceMode;
   CustomerLogin? customerLogin;
   ForgetPasswordVerificationMethod? forgetPasswordVerificationMethod;
+  int? repeatBooking;
 
 
   ConfigContent(
@@ -154,6 +155,7 @@ class ConfigContent {
         this.customerLogin,
         this.firebaseOtpVerification,
         this.errorLogs,
+        this.repeatBooking
       });
 
   ConfigContent.fromJson(Map<String, dynamic> json) {
@@ -253,6 +255,7 @@ class ConfigContent {
         errorLogs!.add(ErrorLog.fromJson(v));
       });
     }
+    repeatBooking = int.tryParse(json['repeat_booking'].toString());
   }
 
   Map<String, dynamic> toJson() {

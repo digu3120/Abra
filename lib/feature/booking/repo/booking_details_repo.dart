@@ -12,6 +12,10 @@ class BookingDetailsRepo{
     return await apiClient.getData("${AppConstants.bookingDetails}/$bookingID");
   }
 
+  Future<Response> getSubBookingDetails({required String bookingID})async{
+    return await apiClient.getData("${AppConstants.subBookingDetails}/$bookingID");
+  }
+
   Future<Response> trackBookingDetails({required String bookingID, required String phoneNUmber})async{
     return await apiClient.postData("${AppConstants.trackBooking}/$bookingID",{
       "phone": phoneNUmber
@@ -23,6 +27,10 @@ class BookingDetailsRepo{
     return await apiClient.postData('${AppConstants.bookingCancel}/$bookingID', {
       "booking_status" :"canceled",
       "_method" : "put"});
+  }
+
+  Future<Response> subBookingCancel({required String bookingID}) async {
+    return await apiClient.postData('${AppConstants.subBookingCancel}/$bookingID', {});
   }
 
 }

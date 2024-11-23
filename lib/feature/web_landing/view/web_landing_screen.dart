@@ -21,9 +21,13 @@ import '../widget/testimonial_widget.dart';
 class WebLandingPage extends StatefulWidget {
   final bool? fromSignUp;
   final String? route;
-  final GlobalKey<CustomShakingWidgetState>?  shakeKey;
+  final GlobalKey<CustomShakingWidgetState>? shakeKey;
 
-  const WebLandingPage({super.key, required this.fromSignUp, required this.route, this.shakeKey}) ;
+  const WebLandingPage(
+      {super.key,
+      required this.fromSignUp,
+      required this.route,
+      this.shakeKey});
 
   @override
   State<WebLandingPage> createState() => _WebLandingPageState();
@@ -37,18 +41,22 @@ class _WebLandingPageState extends State<WebLandingPage> {
     super.initState();
     Get.find<WebLandingController>().getWebLandingContent();
   }
+
   @override
   void dispose() {
     _timer?.cancel();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<WebLandingController>(
-
-      builder: (webLandingController){
-        if(webLandingController.webLandingContent != null){
-          var textContent = { for (var e in webLandingController.webLandingContent!.textContent!) e.keyName : e.liveValues };
+      builder: (webLandingController) {
+        if (webLandingController.webLandingContent != null) {
+          var textContent = {
+            for (var e in webLandingController.webLandingContent!.textContent!)
+              e.keyName: e.liveValues
+          };
 
           return FooterBaseView(
             bottomPadding: false,
@@ -58,11 +66,17 @@ class _WebLandingPageState extends State<WebLandingPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: Dimensions.paddingSizeLarge),
-                  WebLandingSearchSection(textContent: textContent,fromSignUp:widget.fromSignUp,route: widget.route, shakeKey: widget.shakeKey,),
+                  WebLandingSearchSection(
+                    textContent: textContent,
+                    fromSignUp: widget.fromSignUp,
+                    route: widget.route,
+                    shakeKey: widget.shakeKey,
+                  ),
                   const SizedBox(height: Dimensions.paddingSizeExtraMoreLarge),
                   WebMidSection(
                     textContent: textContent,
-                    featureImage: webLandingController.webLandingContent?.featureSectionImage,
+                    featureImage: webLandingController
+                        .webLandingContent?.featureSectionImage,
                   ),
                   const SizedBox(height: Dimensions.paddingSizeExtraMoreLarge),
                   TestimonialWidget(
@@ -70,7 +84,6 @@ class _WebLandingPageState extends State<WebLandingPage> {
                     textContent: textContent,
                   ),
                   const SizedBox(height: Dimensions.paddingSizeExtraMoreLarge),
-
                   SizedBox(
                     height: 570.0,
                     child: Align(
@@ -78,63 +91,103 @@ class _WebLandingPageState extends State<WebLandingPage> {
                       child: SizedBox(
                         width: Dimensions.webMaxWidth,
                         child: Row(
-                          mainAxisAlignment: _config.content!.appUrlAndroid == null && _config.content!.appUrlIos == null
-                              ? MainAxisAlignment.center
-                              :MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                              _config.content!.appUrlAndroid == null &&
+                                      _config.content!.appUrlIos == null
+                                  ? MainAxisAlignment.center
+                                  : MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             //download section image
                             CustomImage(
                               height: Dimensions.webLandingDownloadImageHeight,
-                              width:  Dimensions.webLandingDownloadImageHeight,
-                              image: webLandingController.webLandingContent?.downloadSectionImage ?? "",
+                              width: Dimensions.webLandingDownloadImageHeight,
+                              image: webLandingController.webLandingContent
+                                      ?.downloadSectionImage ??
+                                  "",
                               fit: BoxFit.fitHeight,
                             ),
                             //download app section
-                            if(( _config.content!.appUrlAndroid != null || _config.content!.appUrlIos != null)) Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(width: 50,height: 2,color:Get.isDarkMode ?Colors.white:Colors.black),
-                                    const SizedBox(width: 8.0,),
-                                    Text(textContent['download_section_title']??"", textAlign: TextAlign.center, style: ubuntuBold.copyWith(fontSize: Dimensions.fontSizeExtraLarge),),
-                                  ],
-                                ),
-                                const SizedBox(height: Dimensions.paddingSizeSmall),
-                                Text(
-                                 textContent['download_section_description']??"",
-                                  textAlign: TextAlign.center,
-                                  style: ubuntuRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color,
-                                      fontSize: Dimensions.fontSizeDefault),
-                                ),
-                                const SizedBox(height: Dimensions.paddingSizeLarge),
+                            if ((_config.content!.appUrlAndroid != null ||
+                                _config.content!.appUrlIos != null))
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
                                   Row(
-                                  children: [
-                                   if( _config.content!.appUrlAndroid != null)
-                                    InkWell(
-                                      onTap: () async {
-                                        if(await canLaunchUrlString(_config.content!.appUrlAndroid!)) {launchUrlString(_config.content!.appUrlAndroid!);
-                                        }},
-                                      child: Image.asset(Images.playStoreIcon, height: 45),
-                                    ) ,
-
-                                    const SizedBox(width: Dimensions.paddingSizeDefault,),
-                                    if(_config.content!.appUrlIos != null )
-                                      InkWell(
-                                      onTap: () async {
-                                        if(await canLaunchUrlString(_config.content!.appUrlIos!)) {
-                                          launchUrlString(_config.content!.appUrlIos!);
-                                        }
-                                        },
-                                      child: Image.asset(Images.appStoreIcon, height: 45),)
-
-                                  ],
-                                ),
-                              ],
-                            ),
+                                    children: [
+                                      Container(
+                                          width: 50,
+                                          height: 2,
+                                          color: Get.isDarkMode
+                                              ? Colors.white
+                                              : Colors.black),
+                                      const SizedBox(
+                                        width: 8.0,
+                                      ),
+                                      Text(
+                                        textContent['download_section_title'] ??
+                                            "",
+                                        textAlign: TextAlign.center,
+                                        style: ubuntuBold.copyWith(
+                                            fontSize:
+                                                Dimensions.fontSizeExtraLarge),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                      height: Dimensions.paddingSizeSmall),
+                                  Text(
+                                    textContent[
+                                            'download_section_description'] ??
+                                        "",
+                                    textAlign: TextAlign.center,
+                                    style: ubuntuRegular.copyWith(
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .color,
+                                        fontSize: Dimensions.fontSizeDefault),
+                                  ),
+                                  const SizedBox(
+                                      height: Dimensions.paddingSizeLarge),
+                                  Row(
+                                    children: [
+                                      if (_config.content!.appUrlAndroid !=
+                                          null)
+                                        InkWell(
+                                          onTap: () async {
+                                            if (await canLaunchUrlString(_config
+                                                .content!.appUrlAndroid!)) {
+                                              launchUrlString(_config
+                                                  .content!.appUrlAndroid!);
+                                            }
+                                          },
+                                          child: Image.asset(
+                                              Images.playStoreIcon,
+                                              height: 45),
+                                        ),
+                                      const SizedBox(
+                                        width: Dimensions.paddingSizeDefault,
+                                      ),
+                                      if (_config.content!.appUrlIos != null)
+                                        InkWell(
+                                          onTap: () async {
+                                            if (await canLaunchUrlString(
+                                                _config.content!.appUrlIos!)) {
+                                              launchUrlString(
+                                                  _config.content!.appUrlIos!);
+                                            }
+                                          },
+                                          child: Image.asset(
+                                              Images.appStoreIcon,
+                                              height: 45),
+                                        )
+                                    ],
+                                  ),
+                                ],
+                              ),
                           ],
                         ),
                       ),
@@ -144,7 +197,9 @@ class _WebLandingPageState extends State<WebLandingPage> {
                     width: Get.width,
                     height: Dimensions.webLandingContactUsHeight,
                     decoration: BoxDecoration(
-                      color: Get.isDarkMode?Colors.grey.withOpacity(0.1):Theme.of(context).primaryColorLight,
+                      color: Get.isDarkMode
+                          ? Colors.grey.withOpacity(0.1)
+                          : Theme.of(context).primaryColorLight,
                     ),
                     child: Stack(
                       clipBehavior: Clip.none,
@@ -154,27 +209,40 @@ class _WebLandingPageState extends State<WebLandingPage> {
                           child: SizedBox(
                             width: Dimensions.webMaxWidth,
                             child: Align(
-                              alignment:Get.find<LocalizationController>().isLtr ? Alignment.centerLeft: Alignment.centerRight,
+                              alignment:
+                                  Get.find<LocalizationController>().isLtr
+                                      ? Alignment.centerLeft
+                                      : Alignment.centerRight,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  if(textContent['web_bottom_title'] != null && textContent['web_bottom_title'] != '')
-                                  Text(textContent['web_bottom_title']!,style: ubuntuBold.copyWith(fontSize: 18),),
-                                  const SizedBox(height: Dimensions.paddingSizeDefault,),
+                                  if (textContent['web_bottom_title'] != null &&
+                                      textContent['web_bottom_title'] != '')
+                                    Text(
+                                      textContent['web_bottom_title']!,
+                                      style: ubuntuBold.copyWith(fontSize: 18),
+                                    ),
+                                  const SizedBox(
+                                    height: Dimensions.paddingSizeDefault,
+                                  ),
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       LiveChatButton(
-                                          title:'chat'.tr,
-                                          iconData:Icons.message,
-                                          isBorderActive:false,
+                                        title: 'chat'.tr,
+                                        iconData: Icons.message,
+                                        isBorderActive: false,
                                       ),
-                                      const SizedBox(width:Dimensions.paddingSizeDefault),
+                                      const SizedBox(
+                                          width: Dimensions.paddingSizeDefault),
                                       LiveChatButton(
-                                          title:Get.find<SplashController>().configModel.content!.businessPhone!,
-                                          iconData:Icons.call,
-                                          isBorderActive:true,
+                                        title: Get.find<SplashController>()
+                                            .configModel
+                                            .content!
+                                            .businessPhone!,
+                                        iconData: Icons.call,
+                                        isBorderActive: true,
                                       ),
                                     ],
                                   )
@@ -184,26 +252,37 @@ class _WebLandingPageState extends State<WebLandingPage> {
                           ),
                         ),
                         Positioned(
-                          right:Get.find<LocalizationController>().isLtr ? Get.width/7 : null,
-                          left:Get.find<LocalizationController>().isLtr ?null: Get.width / 7,
-                          top: - 65.0,
-                          child: CustomImage(image: webLandingController.webLandingContent?.supportSectionImage ?? "",
+                          right: Get.find<LocalizationController>().isLtr
+                              ? Get.width / 7
+                              : null,
+                          left: Get.find<LocalizationController>().isLtr
+                              ? null
+                              : Get.width / 7,
+                          top: -65.0,
+                          child: CustomImage(
+                            image: webLandingController
+                                    .webLandingContent?.supportSectionImage ??
+                                "",
                             fit: BoxFit.cover,
-                            width: Dimensions.supportLogoWidth,height:  Dimensions.supportLogoHeight,),
+                            width: Dimensions.supportLogoWidth,
+                            height: Dimensions.supportLogoHeight,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ],),
+                ],
+              ),
             ),
           );
-        }else{
+        } else {
           return const WebLandingShimmer();
         }
       },
     );
   }
 }
+
 class CustomPath extends CustomClipper<Path> {
   final bool? isRtl;
   CustomPath({required this.isRtl});
@@ -211,15 +290,17 @@ class CustomPath extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    if(isRtl!) {
-      path..moveTo(0, size.height)
+    if (isRtl!) {
+      path
+        ..moveTo(0, size.height)
         ..lineTo(size.width, size.height)
-        ..lineTo(size.width*0.7, 0)
+        ..lineTo(size.width * 0.7, 0)
         ..lineTo(0, 0)
         ..close();
-    }else {
-      path..moveTo(0, size.height)
-        ..lineTo(size.width*0.3, 0)
+    } else {
+      path
+        ..moveTo(0, size.height)
+        ..lineTo(size.width * 0.3, 0)
         ..lineTo(size.width, 0)
         ..lineTo(size.width, size.height)
         ..close();
@@ -232,5 +313,3 @@ class CustomPath extends CustomClipper<Path> {
     return true;
   }
 }
-
-

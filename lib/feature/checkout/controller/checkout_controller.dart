@@ -10,6 +10,7 @@ enum PaymentMethodName  {digitalPayment, cos , walletMoney, offline ,none}
 class CheckOutController extends GetxController implements GetxService{
  final CheckoutRepo checkoutRepo;
   CheckOutController({required this.checkoutRepo});
+
   PageState currentPageState = PageState.orderDetails;
   var selectedPaymentMethod = PaymentMethodName.none;
   bool showCoupon = false;
@@ -40,7 +41,6 @@ class CheckOutController extends GetxController implements GetxService{
 
  List<PaymentMethodButton> _othersPaymentList = [];
  List<PaymentMethodButton> get othersPaymentList => _othersPaymentList;
-
 
  List<OfflinePaymentModel>  _offlinePaymentModelList = [];
  List<OfflinePaymentModel>  get offlinePaymentModelList => _offlinePaymentModelList;
@@ -161,9 +161,23 @@ class CheckOutController extends GetxController implements GetxService{
 
  Future<void> placeBookingRequest({
    required String paymentMethod,String? schedule, int isPartial = 0, required AddressModel address,
-   String? offlinePaymentId, String? customerInformation
+   String? offlinePaymentId, String? customerInformation,
  })async{
+
    String zoneId = Get.find<LocationController>().getUserAddress()!.zoneId.toString();
+   var scheduleController = Get.find<ScheduleController>();
+
+   ServiceType serviceType = scheduleController.selectedServiceType;
+   RepeatBookingType repeatBookingType = scheduleController.selectedRepeatBookingType;
+
+   String? repeatBookingDates = CheckoutHelper.getRepeatBookingScheduleList(
+     repeatBookingType: repeatBookingType,
+     dateRange: repeatBookingType == RepeatBookingType.daily ? scheduleController.pickedDailyRepeatBookingDateRange
+         : scheduleController.pickedWeeklyRepeatBookingDateRange,
+     time: repeatBookingType == RepeatBookingType.daily ? scheduleController.pickedDailyRepeatTime : scheduleController.pickedWeeklyRepeatTime ,
+     dateTimeList: scheduleController.pickedCustomRepeatBookingDateTimeList,
+     selectedDays: scheduleController.getWeeklyPickedDays(),
+   );
 
    _isLoading = true;
    update();
@@ -177,7 +191,10 @@ class CheckOutController extends GetxController implements GetxService{
        serviceAddress: address,
        isPartial: isPartial,
        offlinePaymentId: offlinePaymentId ?? "",
-       customerInformation: customerInformation ?? ""
+       customerInformation: customerInformation ?? "",
+       serviceType: serviceType.name,
+       bookingType: repeatBookingType.name,
+       dates: repeatBookingDates
      );
      if(response.statusCode == 200 && response.body["response_code"] == "booking_place_success_200"){
        _isPlacedOrderSuccessfully = true;
@@ -300,12 +317,13 @@ class CheckOutController extends GetxController implements GetxService{
       }
 
     }else{
+
       _othersPaymentList = [
+        if(configModel.content?.walletStatus == 1 && Get.find<AuthController>().isLoggedIn() && Get.find<CartController>().walletBalance > 99)
+          PaymentMethodButton(title: "pay_via_wallet".tr,paymentMethodName: PaymentMethodName.walletMoney,assetName: Images.walletMenu,),
+
         if(configModel.content?.cashAfterService == 1)
           PaymentMethodButton(title: "pay_after_service".tr,paymentMethodName: PaymentMethodName.cos,assetName: Images.cod,),
-
-        if(configModel.content?.walletStatus == 1 && !Get.find<CartController>().walletPaymentStatus && Get.find<AuthController>().isLoggedIn())
-          PaymentMethodButton(title: "pay_via_wallet".tr,paymentMethodName: PaymentMethodName.walletMoney,assetName: Images.walletMenu,),
       ];
 
       if(configModel.content?.digitalPayment == 1){

@@ -394,7 +394,12 @@ class LocationController extends GetxController implements GetxService {
       }
     }
     await saveUserAddress(address);
-    Get.offAllNamed(RouteHelper.getMainRoute('home', previousAddress: previousAddress, showServiceNotAvailableDialog: showDialog));
+    if(canRoute && route !=null && route != "" && route != "home"){
+      Get.offAllNamed(route);
+    }else{
+      Get.offAllNamed(RouteHelper.getMainRoute('home', previousAddress: previousAddress, showServiceNotAvailableDialog: showDialog));
+    }
+
     if(shouldCartDelete){
       await Get.find<CartController>().removeAllCartItem();
     }

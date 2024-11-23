@@ -136,7 +136,7 @@ class SplashScreenState extends State<SplashScreen> {
 
   void _notificationRoute(){
 
-    String notificationType = widget.body?.type??"";
+    String notificationType = widget.body?.notificationType??"";
 
     switch(notificationType) {
 
@@ -148,9 +148,15 @@ class SplashScreenState extends State<SplashScreen> {
         Get.toNamed(RouteHelper.getMyPostScreen(fromNotification: "fromNotification"));
       } break;
 
-      case "booking": {
+      case "booking" || 'booking_ignored': {
         if( widget.body!.bookingId!=null&& widget.body!.bookingId!=""){
-          Get.toNamed(RouteHelper.getBookingDetailsScreen(widget.body!.bookingId!,"",'fromNotification'));
+          if(widget.body?.bookingType == "repeat" && widget.body?.repeatBookingType == "single"){
+            Get.toNamed(RouteHelper.getBookingDetailsScreen( subBookingId : widget.body!.bookingId!,fromPage: 'fromNotification'));
+          }else if(widget.body?.bookingType == "repeat" && widget.body?.repeatBookingType != "single"){
+            Get.toNamed(RouteHelper.getRepeatBookingDetailsScreen( bookingId : widget.body!.bookingId, fromPage : "fromNotification"));
+          }else{
+            Get.toNamed(RouteHelper.getBookingDetailsScreen( bookingID:widget.body!.bookingId!,fromPage: 'fromNotification'));
+          }
         }else{
           Get.toNamed(RouteHelper.getMainRoute(""));
         }

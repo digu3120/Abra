@@ -3,12 +3,15 @@ import 'package:demandium/utils/core_export.dart';
 class DiscountTagWidget extends StatelessWidget {
   final double? discountAmount;
   final String? discountAmountType;
-  const DiscountTagWidget({super.key, this.discountAmount, this.discountAmountType}) ;
+  const DiscountTagWidget(
+      {super.key, this.discountAmount, this.discountAmountType});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeExtraSmall),
+      padding: const EdgeInsets.symmetric(
+          horizontal: Dimensions.paddingSizeSmall,
+          vertical: Dimensions.paddingSizeExtraSmall),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.error,
         borderRadius: const BorderRadius.only(
@@ -16,8 +19,11 @@ class DiscountTagWidget extends StatelessWidget {
           bottomRight: Radius.circular(Dimensions.radiusDefault),
         ),
       ),
-      child: Text(PriceConverter.percentageOrAmount('$discountAmount', '$discountAmountType'),
-        style: ubuntuRegular.copyWith(color: Theme.of(context).primaryColorLight),
+      child: Text(
+        PriceConverter.percentageOrAmount(
+            '$discountAmount', '$discountAmountType'),
+        style:
+            ubuntuRegular.copyWith(color: Theme.of(context).primaryColorLight),
       ),
     );
   }

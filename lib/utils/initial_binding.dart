@@ -24,8 +24,9 @@ class InitialBinding extends Bindings {
     Get.lazyPut(() => ConversationController(conversationRepo: ConversationRepo(apiClient: Get.find())));
     Get.lazyPut(() => CheckOutController(checkoutRepo: CheckoutRepo(apiClient: Get.find())));
     Get.lazyPut(() => ProviderBookingController(providerBookingRepo: ProviderBookingRepo(apiClient: Get.find())));
-    Get.lazyPut(() => ExploreProviderController(providerBookingRepo: ProviderBookingRepo(apiClient: Get.find())));
+    Get.lazyPut(() => NearbyProviderController(providerBookingRepo: ProviderBookingRepo(apiClient: Get.find())));
     Get.lazyPut(() => CreatePostController(createPostRepo: CreatePostRepo(apiClient: Get.find())));
+    Get.lazyPut(() => AdvertisementController(advertisementRepo: AdvertisementRepo(apiClient: Get.find())));
 
   }
 }

@@ -47,7 +47,7 @@ class Images {
   static String get starFill => 'star_fill'.png;
   static String get starBorder => 'star_border'.png;
   static String get editButton => 'edit_button'.png;
-  static String get cod => 'payment_method_icon'.png;
+  static String get cod => 'cod'.png;
   static String get pay => 'cash_on_delivery_icon'.png;
   static String get profileIcon => 'profile_icon'.png;
   static String get file=> 'file_icon'.png;
@@ -74,7 +74,9 @@ class Images {
   static String get privacyPolicyIcon => 'privacy_icon'.png;
   static String get termsIcon => 'terms_icon'.png;
   static String get voucherIcon => 'voucher_icon'.png;
-  static String get iconCalendar => 'icon_calender'.png;
+  static String get calendar1 => 'calendar_1'.png;
+  static String get calendar2 => 'calendar_2'.png;
+  static String get calendar3 => 'calendar_3'.png;
   static String get iconLocation => 'icon_location'.png;
   static String get emptyReview => 'empty_review'.png;
   static String get reviewTopBanner => 'review_top_banner'.png;
@@ -172,6 +174,12 @@ class Images {
   static String get reviewReply => 'review_reply'.png;
   static String get mapIconExtended => 'map-picker-1'.json;
   static String get mapIconMinimised => 'map-picker-2'.json;
+  static String get providerUnavailable => 'provider_unavailable'.png;
+  static String get noProvider => 'no-provider'.png;
+  static String get noProviderBg => 'no-provider-bg'.png;
+  static String get distance => 'distance'.png;
+  static String get favorite => 'favorite'.png;
+  static String get unFavorite => 'unfavorite'.png;
 
 
   ///web social icon

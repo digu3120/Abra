@@ -1,143 +1,56 @@
-import 'package:demandium/common/widgets/image_dialog.dart';
-import 'package:demandium/feature/booking/widget/booking_cancel_button.dart';
 import 'package:demandium/feature/booking/widget/booking_otp_widget.dart';
+import 'package:demandium/feature/booking/widget/booking_photo_evidence.dart';
+import 'package:demandium/feature/booking/widget/payment_info_widget.dart';
 import 'package:get/get.dart';
 import 'package:demandium/utils/core_export.dart';
-import 'package:demandium/feature/booking/widget/booking_summery_widget.dart';
+import 'package:demandium/feature/booking/widget/regular/booking_summery_widget.dart';
 import 'package:demandium/feature/booking/widget/provider_info.dart';
 import 'package:demandium/feature/booking/widget/service_man_info.dart';
 import 'booking_screen_shimmer.dart';
 
 class BookingDetailsSection extends StatelessWidget {
-
-  const BookingDetailsSection({super.key}) ;
+  final String? bookingId;
+  final bool isSubBooking;
+  const BookingDetailsSection({super.key, this.bookingId, required this.isSubBooking}) ;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GetBuilder<BookingDetailsController>( builder: (bookingDetailsTabController) {
-
-        if(bookingDetailsTabController.bookingDetailsContent != null){
-
-          BookingDetailsContent? bookingDetailsContent =  bookingDetailsTabController.bookingDetailsContent;
-          String bookingStatus = bookingDetailsContent?.bookingStatus ?? "";
+        BookingDetailsContent? bookingDetails = isSubBooking ?  bookingDetailsTabController.subBookingDetailsContent : bookingDetailsTabController.bookingDetailsContent;
+        if(bookingDetails != null){
+          String bookingStatus = bookingDetails.bookingStatus ?? "";
           bool isLoggedIn = Get.find<AuthController>().isLoggedIn();
 
-            return SingleChildScrollView( physics: const BouncingScrollPhysics(), child: Center(
-              child: Padding( padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+          return SingleChildScrollView( physics: const ClampingScrollPhysics(), child: Center(
+            child: Padding( padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
 
-                  const SizedBox(height: Dimensions.paddingSizeSmall),
-                  BookingInfo(bookingDetailsContent: bookingDetailsContent!, bookingDetailsTabController: bookingDetailsTabController),
+                const SizedBox(height: Dimensions.paddingSizeDefault),
+                BookingInfo(bookingDetails: bookingDetails, bookingDetailsTabController: bookingDetailsTabController, isSubBooking: isSubBooking,),
 
-                  (Get.find<SplashController>().configModel.content!.confirmationOtpStatus! && (bookingStatus == "accepted" || bookingStatus== "ongoing")) ?
-                  BookingOtpWidget(bookingDetailsContent: bookingDetailsContent) : const SizedBox(height: Dimensions.paddingSizeDefault,),
+                (Get.find<SplashController>().configModel.content!.confirmationOtpStatus! && (bookingStatus == "accepted" || bookingStatus== "ongoing")) ?
+                BookingOtpWidget(bookingDetails: bookingDetails) : const SizedBox(height: Dimensions.paddingSizeDefault,),
 
-                  Container(
-                    decoration: BoxDecoration(color: Theme.of(context).cardColor , borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                        border: Border.all(color: Theme.of(context).hintColor.withOpacity(0.3)), boxShadow: Get.find<ThemeController>().darkTheme ? null : searchBoxShadow
-                    ),//boxShadow: shadow),
-                    padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: Dimensions.paddingSizeSmall),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text('payment_method'.tr, style:ubuntuBold.copyWith(
-                          fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).textTheme.bodyLarge!.color!, decoration: TextDecoration.none,
-                        )),
-                        const SizedBox(height: Dimensions.radiusDefault),
+                PaymentView(bookingDetails: bookingDetails, isSubBooking: isSubBooking),
 
-                        Text(
-                            bookingDetailsContent.paymentMethod!.tr,
-                            style: ubuntuRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.6)),
-                            overflow: TextOverflow.ellipsis),
-                        const SizedBox(height: Dimensions.radiusDefault),
+                const SizedBox(height: Dimensions.paddingSizeLarge),
+                BookingSummeryWidget(bookingDetails: bookingDetails),
 
-                        Text(
-                            '${'transaction_id'.tr} : ${bookingDetailsContent.transactionId ?? ''}',
-                            style: ubuntuRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.6)),
-                            overflow: TextOverflow.ellipsis),
-                      ]),
+                const SizedBox(height: Dimensions.paddingSizeLarge),
+                bookingDetails.provider != null ? ProviderInfo(provider: bookingDetails.provider!) : const SizedBox(),
+                const SizedBox(height: Dimensions.paddingSizeSmall),
 
-                      Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                        Text( '${bookingDetailsContent.isPaid == 0 ? 'unpaid'.tr: 'paid'.tr} ',
-                            style: ubuntuMedium.copyWith(fontSize: Dimensions.fontSizeDefault,
-                                color: bookingDetailsContent.isPaid == 0?Theme.of(context).colorScheme.error : Colors.green, decoration: TextDecoration.none)
-                        ),
-                        const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+                bookingDetails.serviceman != null ? ServiceManInfo(user: bookingDetails.serviceman!.user!) : const SizedBox(),
+                const SizedBox(height: Dimensions.paddingSizeDefault),
 
+                bookingDetails.photoEvidenceFullPath != null && bookingDetails.photoEvidenceFullPath!.isNotEmpty ?
+                BookingPhotoEvidence(bookingDetailsContent: bookingDetails): const SizedBox(),
 
-                        Directionality(
-                          textDirection: TextDirection.ltr,
-                          child: Text(
-                              PriceConverter.convertPrice(bookingDetailsContent.totalBookingAmount!.toDouble(),isShowLongPrice: true),
-                              style: ubuntuBold.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).colorScheme.primary,)),
-                        ),
-                      ]),
-                    ]),
-                  ),
+                SizedBox(height: bookingStatus == "completed" && isLoggedIn ? Dimensions.paddingSizeExtraLarge * 3 : Dimensions.paddingSizeExtraLarge ),
 
-                  const SizedBox(height: Dimensions.paddingSizeDefault),
-                  BookingSummeryWidget(bookingDetailsContent: bookingDetailsContent),
-
-                  const SizedBox(height: Dimensions.paddingSizeDefault),
-                  bookingDetailsContent.provider != null ? ProviderInfo(provider: bookingDetailsContent.provider!) : const SizedBox(),
-                  const SizedBox(height: Dimensions.paddingSizeSmall),
-
-                  bookingDetailsContent.serviceman != null ? ServiceManInfo(user: bookingDetailsContent.serviceman!.user!) : const SizedBox(),
-                  const SizedBox(height: Dimensions.paddingSizeSmall),
-
-                  bookingDetailsContent.photoEvidenceFullPath != null && bookingDetailsContent.photoEvidenceFullPath!.isNotEmpty ?
-                  Padding( padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-                      const SizedBox(height: Dimensions.paddingSizeDefault,),
-                      Text('completed_service_picture'.tr,  style: ubuntuMedium.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).primaryColor),),
-                      const SizedBox(height: Dimensions.paddingSizeSmall),
-
-                      Container(
-                        height: 90,
-                        padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-                        decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.05),
-                          borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                        ),
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: bookingDetailsContent.photoEvidenceFullPath?.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeExtraSmall),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                                child: GestureDetector(
-                                  onTap: () => showDialog(context: context, builder: (ctx)  =>
-                                    ImageDialog(
-                                      imageUrl:bookingDetailsContent.photoEvidenceFullPath?[index]??"",
-                                      title: "completed_service_picture".tr,
-                                      subTitle: "",
-                                    )
-                                  ),
-                                  child: CustomImage(
-                                    image: bookingDetailsContent.photoEvidenceFullPath?[index]??"",
-                                    height: 70, width: 120,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-
-
-                    ],
-                    ),
-                  ): const SizedBox(),
-
-                  const BookingCancelButton(),
-
-                  SizedBox(height: bookingStatus == "completed" && isLoggedIn ? Dimensions.paddingSizeExtraLarge * 3 : Dimensions.paddingSizeExtraLarge ),
-
-                ]),
-              ),
+              ]),
             ),
+          ),
           );
         }else{
           return const SingleChildScrollView(child: BookingScreenShimmer());
@@ -147,7 +60,7 @@ class BookingDetailsSection extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton:
       GetBuilder<BookingDetailsController>(builder: (bookingDetailsController){
-        if(bookingDetailsController.bookingDetailsContent !=null ){
+        if(bookingDetailsController.bookingDetailsContent !=null && !isSubBooking ){
           return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             const Expanded(child: SizedBox()),
             Padding(padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault, left: Dimensions.paddingSizeDefault, right: Dimensions.paddingSizeDefault,),
@@ -162,11 +75,7 @@ class BookingDetailsSection extends StatelessWidget {
                     if (bookingDetailsContent.provider != null ) {
                       showModalBottomSheet( useRootNavigator: true, isScrollControlled: true,
                         backgroundColor: Colors.transparent, context: context, builder: (context) => CreateChannelDialog(
-                          customerID: bookingDetailsContent.customerId,
-                          providerId: bookingDetailsContent.provider?.userId ,
-                          serviceManId:  bookingDetailsContent.serviceman?.userId,
-                          referenceId: bookingDetailsContent.readableId.toString(),
-                          providerData: bookingDetailsContent.provider,
+                         isSubBooking: isSubBooking,
                         ),
                       );
                     } else {

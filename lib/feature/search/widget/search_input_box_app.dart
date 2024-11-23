@@ -9,16 +9,15 @@ class SearchInputBoxApp extends StatefulWidget {
 }
 
 class _SearchInputBoxAppState extends State<SearchInputBoxApp> {
-
   @override
   void initState() {
     super.initState();
     requestFocus();
   }
 
-  requestFocus() async{
+  requestFocus() async {
     Timer(const Duration(milliseconds: 200), () {
-      if(!ResponsiveHelper.isWeb()) {
+      if (!ResponsiveHelper.isWeb()) {
         Get.find<AllSearchController>().searchFocus.requestFocus();
       }
     });
@@ -26,9 +25,10 @@ class _SearchInputBoxAppState extends State<SearchInputBoxApp> {
 
   @override
   Widget build(BuildContext context) {
-    return  GetBuilder<AllSearchController>(
-      builder: (searchController){
-        return Center(child: TextField(
+    return GetBuilder<AllSearchController>(
+      builder: (searchController) {
+        return Center(
+            child: TextField(
           controller: searchController.searchController,
           style: ubuntuRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
           cursorColor: Theme.of(context).colorScheme.primary,
@@ -36,32 +36,48 @@ class _SearchInputBoxAppState extends State<SearchInputBoxApp> {
           focusNode: searchController.searchFocus,
           textAlignVertical: TextAlignVertical.center,
           textInputAction: TextInputAction.search,
-
           decoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 22),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 5, horizontal: 22),
             border: const OutlineInputBorder(
-              borderRadius: BorderRadius.horizontal(right: Radius.circular(50,),left: Radius.circular(50)),
+              borderRadius: BorderRadius.horizontal(
+                  right: Radius.circular(
+                    50,
+                  ),
+                  left: Radius.circular(50)),
               borderSide: BorderSide(style: BorderStyle.none, width: 0),
             ),
-            fillColor: Get.isDarkMode? Theme.of(context).primaryColorDark:const Color(0xffFEFEFE),
+            fillColor: Get.isDarkMode
+                ? Theme.of(context).primaryColorDark
+                : const Color(0xffFEFEFE),
             isDense: true,
             hintText: 'search_services'.tr,
-            hintStyle: ubuntuRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fontSizeDefault),
+            hintStyle: ubuntuRegular.copyWith(
+                color: Theme.of(context).hintColor,
+                fontSize: Dimensions.fontSizeDefault),
             filled: true,
             suffixIcon: InkWell(
               onTap: () {
-                if(searchController.searchController.text.isNotEmpty && searchController.searchController.text.length > 255){
-                  customSnackBar('search_text_length_message'.tr,  showDefaultSnackBar: false, type: ToasterMessageType.info);
-                }else if (searchController.searchController.text.isEmpty){
-                  customSnackBar('search_text_empty_message'.tr, showDefaultSnackBar: false, type: ToasterMessageType.info);
-                }else{
+                if (searchController.searchController.text.isNotEmpty &&
+                    searchController.searchController.text.length > 255) {
+                  customSnackBar('search_text_length_message'.tr,
+                      showDefaultSnackBar: false,
+                      type: ToasterMessageType.info);
+                } else if (searchController.searchController.text.isEmpty) {
+                  customSnackBar('search_text_empty_message'.tr,
+                      showDefaultSnackBar: false,
+                      type: ToasterMessageType.info);
+                } else {
                   Get.back();
                   FocusScope.of(context).unfocus();
-                  Get.toNamed(RouteHelper.getSearchResultRoute(queryText: searchController.searchController.text));
+                  Get.toNamed(RouteHelper.getSearchResultRoute(
+                      queryText: searchController.searchController.text));
                   FocusScope.of(context).unfocus();
                 }
               },
-              child: Container(height: 45, width: 45,
+              child: Container(
+                height: 45,
+                width: 45,
                 margin: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
                 padding: const EdgeInsets.all(Dimensions.paddingSizeSmall + 3),
                 decoration: BoxDecoration(
@@ -70,25 +86,27 @@ class _SearchInputBoxAppState extends State<SearchInputBoxApp> {
                 ),
                 child: Image.asset(Images.searchIcon),
               ),
-            ) ,
+            ),
           ),
           onChanged: (text) {
-            searchController.showSuffixIcon(context,text);
-            if(text.trim().isNotEmpty) {
+            searchController.showSuffixIcon(context, text);
+            if (text.trim().isNotEmpty) {
               searchController.getSearchSuggestion(text);
             }
           },
           onSubmitted: (text) {
-            if(text.isNotEmpty) {
-              if(text.length > 255){
-                customSnackBar('search_text_length_message'.tr, type: ToasterMessageType.info);
-              }else{
+            if (text.isNotEmpty) {
+              if (text.length > 255) {
+                customSnackBar('search_text_length_message'.tr,
+                    type: ToasterMessageType.info);
+              } else {
                 Get.back();
                 FocusScope.of(context).unfocus();
                 Get.toNamed(RouteHelper.getSearchResultRoute(queryText: text));
               }
-            }else{
-              customSnackBar('search_text_empty_message'.tr, type: ToasterMessageType.info);
+            } else {
+              customSnackBar('search_text_empty_message'.tr,
+                  type: ToasterMessageType.info);
             }
           },
         ));

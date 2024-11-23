@@ -1,5 +1,4 @@
 import 'package:demandium/utils/core_export.dart';
-import 'package:demandium/feature/splash/controller/splash_controller.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -57,8 +56,12 @@ class DateConverter {
     return DateFormat('yyyy-MM-ddTHH:mm:ss.SSS').format(dateTime);
   }
 
-  static String convertTimeToTime(String time) {
+  static String convertStringDateTimeToTime(String time) {
     return DateFormat(_timeFormatter()).format(DateFormat('HH:mm').parse(time));
+  }
+
+  static String convertDateTimeToTime(DateTime time) {
+    return DateFormat(_timeFormatter()).format(time);
   }
 
   static String convertStringTimeToDate(DateTime time) {
@@ -82,7 +85,7 @@ class DateConverter {
   }
 
   static String dateStringMonthYear(DateTime ? dateTime) {
-    return DateFormat('d MMM,y').format(dateTime!);
+    return DateFormat('d MMM, y').format(dateTime!);
   }
 
   static String dateToWeek(DateTime ? dateTime) {
@@ -91,6 +94,44 @@ class DateConverter {
 
   static DateTime convertTimeToDateTime(String time) {
     return DateFormat("HH:mm").parse(time);
+  }
+
+  static TimeOfDay convertDateTimeToTimeOfDay(DateTime dateTime) {
+    return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+  }
+
+  static String convertStringTimeToTime(String time) {
+    return DateFormat(_timeFormatter()).format(DateFormat('HH:mm').parse(time));
+  }
+
+  static DateTime combineDateTimeAndTimeOfDay({required DateTime date, required TimeOfDay time}) {
+    return DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
+  }
+
+
+  static String convertDateTimeRangeToString(DateTimeRange dateRange, {String format = 'dd / MM / yy'}) {
+    final startDate = DateFormat(format).format(dateRange.start);
+    final endDate = DateFormat(format).format(dateRange.end);
+    if (startDate == endDate) {
+      return startDate;
+    }
+    return '$startDate   -   $endDate';
+  }
+
+  static DateTimeRange? convertDateTimeListToDateTimeRange(List<DateTime> dateList) {
+    if (dateList.isEmpty) {
+      return null;
+    }
+    DateTime start = dateList.reduce((a, b) => a.isBefore(b) ? a : b);
+    DateTime end = dateList.reduce((a, b) => a.isAfter(b) ? a : b);
+
+    return DateTimeRange(start: start, end: end);
   }
 
 
@@ -138,14 +179,6 @@ class DateConverter {
         //, Get.find<LocalizationController>().locale.languageCode
     );
   }
-
-
-  // static String numberConvertion(String number){
-  //   final number = 13330842.0857192;
-  //   final formatter = NumberFormat.decimalPatternDigits(locale: 'bn', decimalDigits: 2);
-  //   final formattedNumber = formatter.format(number);
-  //   return formattedNumber;
-  // }
 
 
 }

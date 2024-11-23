@@ -19,7 +19,7 @@ class SearchWidgetWeb extends GetView<AllSearchController> {
                     if(Get.find<LocationController>().getUserAddress() !=null){
                       openSearchDialog ? Get.dialog(const SearchSuggestionDialog(), transitionCurve: Curves.fastOutSlowIn) : null;
                     }else{
-                      Get.toNamed(RouteHelper.getPickMapRoute(RouteHelper.accessLocation , true, 'false', null, null,));
+                      Get.toNamed(RouteHelper.getPickMapRoute( "search_service" , false, 'false', null, null,));
                     }
                   } ,
                   controller: controller.searchController,

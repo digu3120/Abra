@@ -1,3 +1,5 @@
+import 'package:demandium/feature/checkout/widget/choose_booking_type_widget.dart';
+import 'package:demandium/feature/checkout/widget/order_details_section/repeat_booking_schedule_widget.dart';
 import 'package:demandium/utils/core_export.dart';
 import 'package:get/get.dart';
 
@@ -7,33 +9,41 @@ class OrderDetailsPageWeb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    ConfigModel configModel = Get.find<SplashController>().configModel;
-    bool showWalletPaymentCart = Get.find<AuthController>().isLoggedIn() && Get.find<CartController>().walletBalance > 0
-        && configModel.content?.walletStatus == 1 && configModel.content?.partialPayment == 1;
+    bool isLoggedIn  = Get.find<AuthController>().isLoggedIn();
+
 
     return Center( child: SizedBox(width: Dimensions.webMaxWidth,
-      child: GetBuilder<CartController>(builder: (cartController){
-        return Row( mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      child: GetBuilder<ScheduleController>(builder: (scheduleController){
+        return GetBuilder<CartController>(builder: (cartController){
+          return Row( mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-          Expanded(child: WebShadowWrap( minHeight: Get.height * 0.1, child: Column( mainAxisSize: MainAxisSize.min, children: [
-            const ServiceSchedule(),
-            const Padding(padding: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault), child: AddressInformation()),
-            ( cartController.cartList.isNotEmpty && cartController.cartList.first.provider !=null) ?  ProviderDetailsCard(
-              providerData: cartController.cartList.first.provider,
-            ) : const SizedBox(),
+            Expanded(child: WebShadowWrap( minHeight: Get.height * 0.1, child: Column( mainAxisSize: MainAxisSize.min, children: [
+              isLoggedIn ? const ChooseBookingTypeWidget() : const SizedBox(),
+              const SizedBox(height: Dimensions.paddingSizeSmall,),
 
-            const SizedBox(height: Dimensions.paddingSizeDefault,),
+              (scheduleController.selectedServiceType == ServiceType.regular || !isLoggedIn) ?
+              const ServiceSchedule() : const RepeatBookingScheduleWidget(),
 
-            Get.find<AuthController>().isLoggedIn() ? const ShowVoucher() : const SizedBox(),
+              const SizedBox(height: Dimensions.paddingSizeDefault),
+              const AddressInformation(),
+              ( cartController.cartList.isNotEmpty && cartController.cartList.first.provider !=null) ?  ProviderDetailsCard(
+                providerData: cartController.cartList.first.provider,
+              ) : const SizedBox(),
 
-            showWalletPaymentCart ? const WalletPaymentCard(fromPage: "checkout",) : const SizedBox(),
-          ]))),
+              const SizedBox(height: Dimensions.paddingSizeDefault,),
 
-          const SizedBox(width: 50,),
-          Expanded(child: WebShadowWrap( minHeight: Get.height * 0.1  ,child: const CartSummery()),),
+              Get.find<AuthController>().isLoggedIn() ? const ShowVoucher() : const SizedBox(),
 
-        ]);
+            ]))),
+
+            const SizedBox(width: 30,),
+            Expanded(child: WebShadowWrap( minHeight: Get.height * 0.1  ,child: const CartSummery()),),
+
+          ]);
+        });
       }),
     ));
   }
 }
+
+

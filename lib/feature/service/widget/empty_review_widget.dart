@@ -1,9 +1,8 @@
 import 'package:demandium/utils/core_export.dart';
 import 'package:get/get.dart';
 
-
 class EmptyReviewWidget extends StatelessWidget {
-  const EmptyReviewWidget({super.key}) ;
+  const EmptyReviewWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +15,28 @@ class EmptyReviewWidget extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(Images.emptyReview,scale:Dimensions.paddingSizeSmall,color: Get.isDarkMode ?  Theme.of(context).primaryColorLight: Theme.of(context).primaryColor,),
-                const SizedBox(height: 20.0,),
-                Text("no_review_yet".tr,style: ubuntuMedium.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(.6)),),
-                const SizedBox(height: 50.0,),
+                Image.asset(
+                  Images.emptyReview,
+                  scale: Dimensions.paddingSizeSmall,
+                  color: Get.isDarkMode
+                      ? Theme.of(context).primaryColorLight
+                      : Theme.of(context).primaryColor,
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                Text(
+                  "no_review_yet".tr,
+                  style: ubuntuMedium.copyWith(
+                      color: Theme.of(context)
+                          .textTheme
+                          .bodyLarge!
+                          .color!
+                          .withOpacity(.6)),
+                ),
+                const SizedBox(
+                  height: 50.0,
+                ),
               ],
             ),
           ),

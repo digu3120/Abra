@@ -77,4 +77,19 @@ class ServiceTabController extends GetxController with GetSingleTickerProviderSt
     controller!.dispose();
     super.onClose();
   }
+
+  updateProviderReviewExpendedStatus({int? index, bool shouldUpdate = true}){
+    if(index  !=null){
+      _reviewList?[index].isExpended = 1;
+      if(shouldUpdate){
+        update();
+      }
+    } else{
+      if(_reviewList !=null && reviewList!.isNotEmpty){
+        for(int index = 0; index < _reviewList!.length ; index ++){
+          _reviewList?[index].isExpended = 0;
+        }
+      }
+    }
+  }
 }

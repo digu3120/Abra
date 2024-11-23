@@ -5,7 +5,12 @@ class RatingBar extends StatelessWidget {
   final double? size;
   final int? ratingCount;
   final Color? color;
-  const RatingBar({super.key, required this.rating, this.ratingCount, this.size = 18, this.color});
+  const RatingBar(
+      {super.key,
+      required this.rating,
+      this.ratingCount,
+      this.size = 18,
+      this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +19,10 @@ class RatingBar extends StatelessWidget {
     int realNumber = rating!.floor();
     int partNumber = ((rating! - realNumber) * 10).ceil();
 
-
     for (int i = 0; i < 5; i++) {
       if (i < realNumber) {
-        starList.add(Icon(Icons.star, color: color ?? Theme.of(context).colorScheme.primary, size: size));
+        starList.add(Icon(Icons.star,
+            color: color ?? Theme.of(context).colorScheme.primary, size: size));
       } else if (i == realNumber) {
         starList.add(SizedBox(
           height: size,
@@ -25,28 +30,34 @@ class RatingBar extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Icon(Icons.star, color: color ?? Theme.of(context).colorScheme.primary, size: size),
+              Icon(Icons.star,
+                  color: color ?? Theme.of(context).colorScheme.primary,
+                  size: size),
               ClipRect(
                 clipper: _Clipper(part: partNumber),
                 child: Icon(Icons.star,
-                    color: Theme.of(context).hintColor,
-                    size: size),
+                    color: Theme.of(context).hintColor, size: size),
               )
             ],
           ),
         ));
-      }
-      else {
-        starList.add(Icon(
-            Icons.star,
-            color: Theme.of(context).hintColor,
-            size: size));
+      } else {
+        starList.add(
+            Icon(Icons.star, color: Theme.of(context).hintColor, size: size));
       }
     }
-    ratingCount != null ? starList.add(Padding(
-      padding: const EdgeInsets.only(left: Dimensions.paddingSizeExtraSmall),
-      child: Directionality(textDirection: TextDirection.ltr, child: Text('($ratingCount)', style: ubuntuRegular.copyWith(fontSize: size!*0.8, color: Theme.of(context).disabledColor))),
-    )) : const SizedBox();
+    ratingCount != null
+        ? starList.add(Padding(
+            padding:
+                const EdgeInsets.only(left: Dimensions.paddingSizeExtraSmall),
+            child: Directionality(
+                textDirection: TextDirection.ltr,
+                child: Text('($ratingCount)',
+                    style: ubuntuRegular.copyWith(
+                        fontSize: size! * 0.8,
+                        color: Theme.of(context).disabledColor))),
+          ))
+        : const SizedBox();
 
     return Row(
       mainAxisSize: MainAxisSize.min,

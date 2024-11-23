@@ -11,43 +11,62 @@ class LiveChatButton extends StatelessWidget {
   final String title;
   final IconData iconData;
   final bool isBorderActive;
-  const LiveChatButton({super.key, required this.title, required this.iconData, required this.isBorderActive}) ;
+  const LiveChatButton(
+      {super.key,
+      required this.title,
+      required this.iconData,
+      required this.isBorderActive});
 
   @override
   Widget build(BuildContext context) {
-    final Uri launchUri =  Uri(
+    final Uri launchUri = Uri(
       scheme: 'tel',
-      path: Get.find<SplashController>().configModel.content!.businessPhone.toString(),
+      path: Get.find<SplashController>()
+          .configModel
+          .content!
+          .businessPhone
+          .toString(),
     );
     return ElevatedButton(
       onPressed: () async {
-        if(!isBorderActive) {
-
-          if(Get.find<AuthController>().isLoggedIn()){
+        if (!isBorderActive) {
+          if (Get.find<AuthController>().isLoggedIn()) {
             Get.toNamed(RouteHelper.getInboxScreenRoute());
-          }else{
-            Get.toNamed(RouteHelper.getNotLoggedScreen(RouteHelper.chatInbox, 'inbox'));
+          } else {
+            Get.toNamed(
+                RouteHelper.getNotLoggedScreen(RouteHelper.chatInbox, 'inbox'));
           }
-
-        } else{
-          await launchUrl(launchUri,mode: LaunchMode.externalApplication);
+        } else {
+          await launchUrl(launchUri, mode: LaunchMode.externalApplication);
         }
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor:isBorderActive ? Colors.transparent : Theme.of(context).colorScheme.primary,
-        side: BorderSide(color:Theme.of(context).colorScheme.primary), elevation: 0.0,
+        backgroundColor: isBorderActive
+            ? Colors.transparent
+            : Theme.of(context).colorScheme.primary,
+        side: BorderSide(color: Theme.of(context).colorScheme.primary),
+        elevation: 0.0,
         shape: const RoundedRectangleBorder(
-          borderRadius:BorderRadius.all(Radius.circular(Dimensions.radiusDefault)
-          ),
+          borderRadius:
+              BorderRadius.all(Radius.circular(Dimensions.radiusDefault)),
         ),
       ),
-      child: Padding(padding: const EdgeInsets.all(8.0), child: Row(children: [
-
-        Icon(iconData,color: isBorderActive ? Theme.of(context).colorScheme.primary : Theme.of(context).primaryColorLight),
-        const SizedBox(width: Dimensions.paddingSizeExtraSmall,),
-
-        Text(title,style: ubuntuRegular.copyWith(color:isBorderActive ? Theme.of(context).colorScheme.primary : Theme.of(context).primaryColorLight ))
-      ])),
+      child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(children: [
+            Icon(iconData,
+                color: isBorderActive
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).primaryColorLight),
+            const SizedBox(
+              width: Dimensions.paddingSizeExtraSmall,
+            ),
+            Text(title,
+                style: ubuntuRegular.copyWith(
+                    color: isBorderActive
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).primaryColorLight))
+          ])),
     );
   }
 }

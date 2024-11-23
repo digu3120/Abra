@@ -25,9 +25,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     Get.find<CheckOutController>().getOfflinePaymentMethod(true);
     Get.find<CheckOutController>().getPaymentMethodList(isPartialPayment: Get.find<CartController>().walletPaymentStatus);
     Get.find<CheckOutController>().changePaymentMethod(shouldUpdate: false);
-    Get.find<CartController>().getCartListFromServer(shouldUpdate: false);
-    Get.find<CartController>().updateIsOpenPartialPaymentPopupStatus(true, shouldUpdate: false);
+
     if(widget.pageState == 'orderDetails'){
+      Get.find<CartController>().getCartListFromServer(shouldUpdate: false);
+      Get.find<ScheduleController>().resetScheduleData(shouldUpdate: false);
       Get.find<CheckOutController>().toggleTerms(value: false, shouldUpdate: false);
       Get.find<ScheduleController>().resetSchedule();
     }else{
@@ -36,10 +37,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if(widget.token !=null && widget.token != "null" && widget.token != ""){
       Get.find<CheckOutController>().parseBookingIdFromToken(widget.token!);
     }
+    Get.find<CartController>().updateWalletPaymentStatus(false, shouldUpdate: false);
 
-    if(widget.reload!){
-      Get.find<CartController>().updateWalletPaymentStatus(false, shouldUpdate: false);
-    }
     super.initState();
   }
 

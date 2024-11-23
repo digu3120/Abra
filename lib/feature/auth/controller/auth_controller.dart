@@ -142,7 +142,6 @@ class AuthController extends GetxController implements GetxService {
   _saveTokenAndNavigate({String? fromPage, required String token, String? emailPhone, String? password}) async {
 
     authRepo.saveUserToken(token);
-    await authRepo.updateToken();
 
     Get.find<SplashController>().updateLanguage(true);
     Get.find<LocationController>().getAddressList();

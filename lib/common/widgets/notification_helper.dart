@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:demandium/common/widgets/demo_reset_dialog_widget.dart';
+import 'package:demandium/feature/booking/widget/booking_ignored_bottom_sheet.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
@@ -21,9 +23,9 @@ class NotificationHelper {
         if(payload.payload!=null && payload.payload!=''){
           NotificationBody notificationBody = NotificationBody.fromJson(jsonDecode(payload.payload!));
           if (kDebugMode) {
-            print("Type: ${notificationBody.type}");
+            print("Type: ${notificationBody.notificationType}");
           }
-          if(notificationBody.type == "chatting"){
+          if(notificationBody.notificationType == "chatting"){
 
             if(!GetPlatform.isWeb){
               if(Get.currentRoute.contains(RouteHelper.chatScreen)){
@@ -42,29 +44,35 @@ class NotificationHelper {
                 fromNotification: "fromNotification"
             ));
           }
-          else if(notificationBody.type == 'bidding' || notificationBody.type == 'bid-withdraw'){
+          else if(notificationBody.notificationType == 'bidding' || notificationBody.notificationType == 'bid-withdraw'){
             Get.toNamed(RouteHelper.getMyPostScreen(fromNotification: "fromNotification"));
           }
 
-          else if(notificationBody.type == 'logout'){
+          else if(notificationBody.notificationType == 'logout'){
             Get.find<AuthController>().clearSharedData();
             Get.offNamed(RouteHelper.getSignInRoute());
           }
-          else if(notificationBody.type == 'wallet'){
+          else if(notificationBody.notificationType == 'wallet'){
             if(!Get.currentRoute.contains(RouteHelper.myWallet)){
               Get.toNamed(RouteHelper.getMyWalletScreen(fromNotification: "fromNotification"));
             }
           }
-          else if(notificationBody.type == 'loyalty_point'){
+          else if(notificationBody.notificationType == 'loyalty_point'){
             if(!Get.currentRoute.contains(RouteHelper.loyaltyPoint)){
               Get.toNamed(RouteHelper.getLoyaltyPointScreen(fromNotification: "fromNotification"));
             }
           }
-          else if(notificationBody.type == 'booking' && notificationBody.bookingId !=null && notificationBody.bookingId!=''){
-            Get.toNamed(RouteHelper.getBookingDetailsScreen(notificationBody.bookingId.toString(),"",'fromNotification'));
-          } else if(notificationBody.type=='privacy_policy' && notificationBody.title!=null && notificationBody.title!=''){
+          else if(notificationBody.notificationType == 'booking' && notificationBody.bookingId !=null && notificationBody.bookingId!=''){
+            if(notificationBody.bookingType == "repeat" && notificationBody.repeatBookingType == "single"){
+              Get.toNamed(RouteHelper.getBookingDetailsScreen( subBookingId : notificationBody.bookingId!,fromPage: 'fromNotification'));
+            }else if(notificationBody.bookingType == "repeat" && notificationBody.repeatBookingType != "single"){
+              Get.toNamed(RouteHelper.getRepeatBookingDetailsScreen( bookingId : notificationBody.bookingId, fromPage : "fromNotification"));
+            }else{
+              Get.toNamed(RouteHelper.getBookingDetailsScreen( bookingID:notificationBody.bookingId!,fromPage: 'fromNotification'));
+            }
+          } else if(notificationBody.notificationType=='privacy_policy' && notificationBody.title!=null && notificationBody.title!=''){
             Get.toNamed(RouteHelper.getHtmlRoute("privacy-policy"));
-          }else if(notificationBody.type=='terms_and_conditions' && notificationBody.title!=null && notificationBody.title!=''){
+          }else if(notificationBody.notificationType=='terms_and_conditions' && notificationBody.title!=null && notificationBody.title!=''){
               Get.toNamed(RouteHelper.getHtmlRoute("terms-and-condition"));
           }else{
               Get.toNamed(RouteHelper.getNotificationRoute());
@@ -81,6 +89,7 @@ class NotificationHelper {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (kDebugMode) {
         print("onMessage: Notification Type => ${message.data["type"]}/ Title => ${message.data['title']} ${message.notification?.title}/${message.notification?.body}/${message.notification?.titleLocKey}");
+        print("onMessage: Notification Body => ${message.data.toString()}");
       }
       if(!ResponsiveHelper.isWeb()){
         if(message.data['type']=='bidding'){
@@ -154,6 +163,14 @@ class NotificationHelper {
             Get.dialog(const DemoResetDialogWidget(), barrierDismissible: false);
           }
         }
+        else if(message.data['type'] == 'booking_ignored') {
+          showModalBottomSheet(
+            isDismissible: false,
+            backgroundColor: Colors.transparent,
+            context: Get.context!,
+              builder: (context) =>  NotificationIgnoredBottomSheet(bookingId: message.data['booking_id']),
+          );
+        }
         else{
           NotificationHelper.showNotification(message, flutterLocalNotificationsPlugin, false);
         }
@@ -167,8 +184,13 @@ class NotificationHelper {
             Get.find<ConversationController>().cleanOldData();
             Get.find<ConversationController>().setChannelId(message.data['channel_id']);
             Get.find<ConversationController>().getConversation(message.data['channel_id'], 1,isInitial:true);
-          } else if(message.data["type"]=="bidding" && message.data["provider_id"]==""){
+          } else if(notificationBody.notificationType =="booking_ignored" && notificationBody.bookingId != null){
 
+            if(Get.find<AuthController>().isNotificationActive()){
+              final player = AudioPlayer();
+              player.play(AssetSource('notification.wav'));
+            }
+            Get.dialog( Center(child: NotificationIgnoredBottomSheet(bookingId: message.data['booking_id'],)), barrierDismissible: false);
           }
           else if(message.data["type"]=="bid-withdraw" && Get.currentRoute.contains(RouteHelper.customPostCheckout)){
             Future.delayed(const Duration(microseconds: 500), () {
@@ -202,7 +224,7 @@ class NotificationHelper {
      try{
        if(message !=null && message.data.isNotEmpty) {
          NotificationBody notificationBody = convertNotification(message.data);
-         if(notificationBody.type == "chatting"){
+         if(notificationBody.notificationType == "chatting"){
 
            if(!GetPlatform.isWeb){
              if(Get.currentRoute.contains(RouteHelper.chatScreen)){
@@ -221,29 +243,35 @@ class NotificationHelper {
                fromNotification: "fromNotification"
            ));
          }
-         else if(notificationBody.type == 'bidding' || notificationBody.type == 'bid-withdraw'){
+         else if(notificationBody.notificationType == 'bidding' || notificationBody.notificationType == 'bid-withdraw'){
           if(!Get.currentRoute.contains(RouteHelper.myWallet)){
             Get.toNamed(RouteHelper.getMyPostScreen(fromNotification: "fromNotification"));
           }
          }
-         else if(notificationBody.type == 'booking' && notificationBody.bookingId != null && notificationBody.bookingId !=''){
-           Get.toNamed(RouteHelper.getBookingDetailsScreen(notificationBody.bookingId.toString(),"",'fromNotification'));
+         else if(notificationBody.notificationType == 'booking' && notificationBody.bookingId != null && notificationBody.bookingId !=''){
+           if(notificationBody.bookingType == "repeat" && notificationBody.repeatBookingType == "single"){
+             Get.toNamed(RouteHelper.getBookingDetailsScreen( subBookingId : notificationBody.bookingId!,fromPage: 'fromNotification'));
+           }else if(notificationBody.bookingType == "repeat" && notificationBody.repeatBookingType != "single"){
+             Get.toNamed(RouteHelper.getRepeatBookingDetailsScreen( bookingId : notificationBody.bookingId, fromPage : "fromNotification"));
+           }else{
+             Get.toNamed(RouteHelper.getBookingDetailsScreen( bookingID:notificationBody.bookingId!,fromPage: 'fromNotification'));
+           }
          }
-         else if(notificationBody.type == 'privacy_policy' && notificationBody.title != null && notificationBody.title !=''){
+         else if(notificationBody.notificationType == 'privacy_policy' && notificationBody.title != null && notificationBody.title !=''){
            Get.toNamed(RouteHelper.getHtmlRoute("privacy-policy"));
          }
-         else if(notificationBody.type == 'terms_and_conditions' && notificationBody.title != null && notificationBody.title !=''){
+         else if(notificationBody.notificationType == 'terms_and_conditions' && notificationBody.title != null && notificationBody.title !=''){
            Get.toNamed(RouteHelper.getHtmlRoute("terms-and-condition"));
          }
-         else if(notificationBody.type == "wallet"){
+         else if(notificationBody.notificationType == "wallet"){
           Get.toNamed(RouteHelper.getMyWalletScreen(fromNotification: "fromNotification"));
          }
-         else if(notificationBody.type == 'loyalty_point'){
+         else if(notificationBody.notificationType == 'loyalty_point'){
            if(!Get.currentRoute.contains(RouteHelper.loyaltyPoint)){
              Get.toNamed(RouteHelper.getLoyaltyPointScreen(fromNotification: "fromNotification"));
            }
          }
-         else if(notificationBody.type == 'logout'){
+         else if(notificationBody.notificationType == 'logout'){
            Get.find<AuthController>().clearSharedData();
            Get.offNamed(RouteHelper.getSignInRoute());
          }
@@ -262,13 +290,13 @@ class NotificationHelper {
   static Future<void> showNotification(RemoteMessage message, FlutterLocalNotificationsPlugin fln, bool data) async {
     if(!GetPlatform.isIOS) {
       String? title;
-      String? body;
+      String body;
       String? orderID;
       String? image;
       String playLoad = jsonEncode(message.data);
 
-      title = message.data['title']?.replaceAll('_', ' ').toString().capitalize;
-      body = message.data['body'].replaceAll('_', ' ').toString();
+      title = message.data['title'];
+      body = message.data['body'] ?? "";
       orderID = message.data['booking_id'].toString();
       image = (message.data['image'] != null && message.data['image'].isNotEmpty)
           ? message.data['image'].startsWith('http') ? message.data['image']

@@ -14,6 +14,7 @@ class CartModel {
   num? _couponDiscountAmount;
   num? _referralDiscountAmount;
   String? _couponCode;
+  int? _couponRemainingUses;
   num? _taxAmount;
   num? _totalCost;
   Service? _service;
@@ -32,6 +33,7 @@ class CartModel {
       num couponDiscountAmount,
       num referralDiscountAmount,
       String? couponCode,
+      int? couponRemainingUses,
       num taxAmount,
       num totalCost,
       Service service,
@@ -51,6 +53,7 @@ class CartModel {
   _couponDiscountAmount = couponDiscountAmount;
   _referralDiscountAmount = referralDiscountAmount;
   _couponCode = couponCode;
+  _couponRemainingUses = couponRemainingUses;
   _taxAmount = taxAmount;
   _totalCost = totalCost;
   _service = service;
@@ -72,6 +75,7 @@ class CartModel {
   num get couponDiscountPrice => _couponDiscountAmount!;
   num get referralDiscountAmount => _referralDiscountAmount!;
   String? get couponCode => _couponCode;
+  int? get couponRemainingUses => _couponRemainingUses;
   num get taxAmount => _taxAmount!;
   num get totalCost => _totalCost!;
   num get serviceCost => _serviceCost!;
@@ -105,6 +109,7 @@ class CartModel {
     _couponDiscountAmount = json['coupon_discount'];
     _referralDiscountAmount = double.tryParse(json['referral_discount'].toString());
     _couponCode = json['coupon_code'];
+    _couponRemainingUses = int.tryParse(json['remaining_uses'].toString());
     _taxAmount = json['tax_amount'];
     _totalCost = json['total_cost'];
     _service = json['service'] != null ? Service.fromJson(json['service']) : null;

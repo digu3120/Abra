@@ -1,6 +1,6 @@
+import 'package:demandium/common/models/popup_menu_model.dart';
 import 'package:demandium/utils/core_export.dart';
 import 'package:get/get.dart';
-import 'package:demandium/feature/booking/model/invoice.dart';
 
 
 enum BookingDetailsTabs {bookingDetails, status}
@@ -19,16 +19,16 @@ class BookingDetailsController extends GetxController implements GetxService{
   bool get isLoading => _isLoading;
   bool _isCancelling = false;
   bool get isCancelling => _isCancelling;
+
   BookingDetailsContent? _bookingDetailsContent;
   BookingDetailsContent? get bookingDetailsContent => _bookingDetailsContent;
-  List<InvoiceItem> _invoiceItems =[];
-  List<InvoiceItem> get invoiceItems => _invoiceItems;
 
-  List<double> _unitTotalCost =[];
-  double _allTotalCost = 0;
+  BookingDetailsContent? _subBookingDetailsContent;
+  BookingDetailsContent? get subBookingDetailsContent => _subBookingDetailsContent;
 
-  List<double> get unitTotalCost => _unitTotalCost;
-  double get allTotalCost => _allTotalCost;
+  DigitalPaymentMethod? _selectedDigitalPaymentMethod;
+  DigitalPaymentMethod ? get selectedDigitalPaymentMethod => _selectedDigitalPaymentMethod;
+
 
   void updateBookingStatusTabs(BookingDetailsTabs bookingDetailsTabs){
     _selectedDetailsTabs = bookingDetailsTabs;
@@ -36,14 +36,24 @@ class BookingDetailsController extends GetxController implements GetxService{
   }
 
 
-  Future<void> bookingCancel({required String bookingId})async{
+  Future<void> bookingCancel({required String bookingId, bool fromListScreen = false,})async{
     _isCancelling = true;
     update();
-    Response? response = await bookingDetailsRepo.bookingCancel(bookingID: bookingId);
+    Response? response =  await  bookingDetailsRepo.bookingCancel(bookingID: bookingId);
     if(response.statusCode == 200 && response.body['response_code']=="status_update_success_200"){
       _isCancelling = false;
       customSnackBar('booking_cancelled_successfully'.tr, type : ToasterMessageType.success);
-      await getBookingDetails(bookingId: bookingId);
+      if(fromListScreen) {
+        Get.find<ServiceBookingController>().updateBookingStatusTabs(
+            Get.find<ServiceBookingController>().selectedBookingStatus,
+        );
+      }else{
+        await getBookingDetails(bookingId: bookingId);
+        Get.find<ServiceBookingController>().updateBookingStatusTabs(
+          Get.find<ServiceBookingController>().selectedBookingStatus,
+        );
+      }
+
     }else if(response.statusCode == 200 && (response.body['response_code'] == "booking_already_accepted_200"
         || response.body['response_code'] == "booking_already_ongoing_200" || response.body['response_code'] == "booking_already_completed_200")){
       customSnackBar(response.body['message'] ?? "");
@@ -57,19 +67,50 @@ class BookingDetailsController extends GetxController implements GetxService{
     update();
   }
 
-  Future<void> getBookingDetails({required String bookingId})async{
-    _bookingDetailsContent = null;
+  Future<void> subBookingCancel({required String subBookingId})async{
+    _isCancelling = true;
+    update();
+    Response? response =  await  bookingDetailsRepo.subBookingCancel(bookingID: subBookingId);
+    if(response.statusCode == 200 ){
+      _isCancelling = false;
+
+      await getSubBookingDetails(bookingId: subBookingId);
+      if(_bookingDetailsContent != null){
+        getBookingDetails(bookingId: _bookingDetailsContent?.id ?? "", reload : false );
+      }
+      customSnackBar('booking_cancelled_successfully'.tr, type : ToasterMessageType.success);
+    } else{
+      _isCancelling = false;
+      ApiChecker.checkApi(response);
+    }
+    update();
+  }
+
+  Future<void> getBookingDetails({required String bookingId, bool reload = true})async{
+    if(reload){
+      _bookingDetailsContent = null;
+    }
     Response response = await bookingDetailsRepo.getBookingDetails(bookingID: bookingId);
     if(response.statusCode == 200){
       _bookingDetailsContent = BookingDetailsContent.fromJson(response.body['content']);
-
-      if(_bookingDetailsContent!.detail != null ){
-        setBookingDetailsData(_bookingDetailsContent!);
-      }
       update();
     } else {
       ApiChecker.checkApi(response);
     }
+  }
+
+  Future<void> getSubBookingDetails({required String bookingId})async{
+
+    _subBookingDetailsContent = null;
+    Response response = await bookingDetailsRepo.getSubBookingDetails(bookingID: bookingId);
+    if(response.statusCode == 200){
+      _subBookingDetailsContent = BookingDetailsContent.fromJson(response.body['content']);
+
+    } else {
+      ApiChecker.checkApi(response);
+    }
+    update();
+
   }
 
 
@@ -83,9 +124,7 @@ class BookingDetailsController extends GetxController implements GetxService{
       Response response = await bookingDetailsRepo.trackBookingDetails(bookingID: bookingReadableId, phoneNUmber: phone);
       if(response.statusCode == 200){
         _bookingDetailsContent = BookingDetailsContent.fromJson(response.body['content']);
-        if(_bookingDetailsContent != null){
-          setBookingDetailsData(_bookingDetailsContent!);
-        }
+
       }else{
         _bookingDetailsContent = null;
         _isLoading = false;
@@ -100,28 +139,21 @@ class BookingDetailsController extends GetxController implements GetxService{
     }
   }
 
-  void setBookingDetailsData (BookingDetailsContent bookingDetailsContent){
-    _invoiceItems = [];
-    _allTotalCost = 0.0;
-    _unitTotalCost = [];
-
-    for (var element in bookingDetailsContent.detail!) {
-      _unitTotalCost.add(element.serviceCost!.toDouble() * element.quantity!);
-      _invoiceItems.add(
-        InvoiceItem(
-          discountAmount:(element.discountAmount! + element.campaignDiscountAmount!.toDouble() + element.overallCouponDiscountAmount!.toDouble()).toStringAsFixed(2),
-          tax: element.taxAmount?.toStringAsFixed(2),
-          unitAllTotal: element.totalCost?.toStringAsFixed(2),
-          quantity: element.quantity ?? 0,
-          serviceName: "${element.serviceName ?? 'service_deleted'.tr } \n${element.variantKey?.replaceAll('-', ' ').capitalizeFirst ??  'variantKey_not_available'.tr}" ,
-          unitPrice: element.serviceCost?.toStringAsFixed(2),
-        )
-      );
-    }
-    for (var element in _unitTotalCost) {
-      _allTotalCost = _allTotalCost + element;
+  void updateSelectedDigitalPayment({DigitalPaymentMethod? value, bool shouldUpdate = true}){
+    _selectedDigitalPaymentMethod = value;
+    if(shouldUpdate){
+      update();
     }
   }
+
+  void resetBookingDetailsValue({bool shouldUpdate = false, bool resetBookingDetails = false}){
+    _selectedDetailsTabs = BookingDetailsTabs.bookingDetails;
+    _subBookingDetailsContent = null;
+    if(resetBookingDetails){
+      _bookingDetailsContent = null;
+    }
+  }
+
 
   void resetTrackingData({bool shouldUpdate = true}){
     bookingIdController.clear();
@@ -131,6 +163,46 @@ class BookingDetailsController extends GetxController implements GetxService{
     if(shouldUpdate){
       update();
     }
+  }
+
+  List<PopupMenuModel> getPopupMenuList(String status) {
+    if (status == "pending") {
+      return [
+        PopupMenuModel(title: "download_invoice", icon: Icons.file_download_outlined),
+        PopupMenuModel(title: "cancel", icon: Icons.cancel_outlined),
+      ];
+    } else if(status == "completed"){
+      return [
+        PopupMenuModel(title: "download_invoice", icon: Icons.file_download_outlined),
+        PopupMenuModel(title: "review", icon: Icons.reviews_outlined),
+      ];
+    }
+    return [];
+  }
+
+  List<PopupMenuModel> getPServiceLogMenuList({required String status,  bool nextService = false}) {
+
+    if (status == "pending") {
+      return [
+        PopupMenuModel(title: "download_invoice", icon: Icons.file_download_outlined),
+
+      ];
+    } else if (status == "accepted") {
+      return [
+        if(nextService) PopupMenuModel(title: "booking_details", icon: Icons.remove_red_eye),
+        PopupMenuModel(title: "download_invoice", icon: Icons.file_download_outlined),
+        if(!nextService) PopupMenuModel(title: "cancel", icon: Icons.cancel_outlined),
+      ];
+    }
+
+    else if (status == "ongoing" || status == "completed" || status == "canceled") {
+      return [
+        PopupMenuModel(title: "booking_details", icon: Icons.remove_red_eye),
+        PopupMenuModel(title: "download_invoice", icon: Icons.file_download_outlined),
+
+      ];
+    }
+    return [];
   }
 
 }

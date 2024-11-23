@@ -6,24 +6,30 @@ class CustomerInfoCard extends GetView<UserController> {
   final String phone;
   final String? image;
 
-  const CustomerInfoCard( {super.key, required this.name, required this.phone, required this.image}) ;
-
+  const CustomerInfoCard(
+      {super.key,
+      required this.name,
+      required this.phone,
+      required this.image});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
+      padding:
+          const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
       child: Container(
-        width:double.infinity,
+        width: double.infinity,
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(Dimensions.paddingSizeExtraSmall)),
+          borderRadius: const BorderRadius.all(
+              Radius.circular(Dimensions.paddingSizeExtraSmall)),
           color: Theme.of(context).hoverColor,
         ),
         child: Column(
           children: [
             Gaps.verticalGapOf(Dimensions.paddingSizeDefault),
             ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(Dimensions.paddingSizeExtraLarge)),
+              borderRadius: const BorderRadius.all(
+                  Radius.circular(Dimensions.paddingSizeExtraLarge)),
               child: SizedBox(
                 width: Dimensions.imageSize,
                 height: Dimensions.imageSize,
@@ -31,9 +37,15 @@ class CustomerInfoCard extends GetView<UserController> {
               ),
             ),
             Gaps.verticalGapOf(Dimensions.paddingSizeExtraSmall),
-            Text(name,style:ubuntuBold.copyWith(fontSize: Dimensions.fontSizeDefault,)),
+            Text(name,
+                style: ubuntuBold.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                )),
             Gaps.verticalGapOf(Dimensions.paddingSizeExtraSmall),
-            Text(phone,style:ubuntuRegular.copyWith(fontSize: Dimensions.fontSizeDefault,)),
+            Text(phone,
+                style: ubuntuRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                )),
             Gaps.verticalGapOf(Dimensions.paddingSizeDefault),
           ],
         ),
